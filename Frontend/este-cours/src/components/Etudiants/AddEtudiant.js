@@ -258,8 +258,8 @@ export default class AddEtudiant extends Component {
                 <option value="3">ISIL</option>
                 <option value="4">GODT1</option>
                 <option value="5">GODT2</option>
-                <option value="6">IDSF 1</option>
-                <option value="7">Environnement 1</option>
+                <option value="6">IDSF1</option>
+                <option value="7">Environnement1</option>
                 <option value="8">ER1</option>
                 <option value="9">ER2</option>
                 <option value="10">ERDD</option>

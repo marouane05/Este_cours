@@ -60,7 +60,9 @@ where : {id : req.params.etudiantId},
                 email : req.body.email,
                 tele : req.body.tele ,
                 FiliereId:parseInt(req.body.filiere),
-              })
+              }
+              )
+              res.send('Eutdiant '+etudiant.nom +' '+etudiant.prenom+' est bien modifier')
         }else {
             res.send('Eutdiant does not exists')
         }

@@ -48,7 +48,8 @@ users.post('/login' ,(req , res) =>{
             const payload = {
                 id : user.id,
                 username : user.username,
-                email : user.email
+                email : user.email,
+                type : user.type
             }
             let token = jwt.sign(payload, process.env.SECRET_KEY, {
                 expiresIn : 1440
@@ -131,6 +132,43 @@ users.get('/profile' ,(req , res) =>{
         res.send('error' + err)
     })
 })
+
+
+users.put('/:userId' , (req, res) =>{
+
+    User.findOne({
+where : {id : req.params.userId},
+    })    .then(user =>{
+        if(user){
+            bcryptjs.hash(req.body.password, 10, (err,hash) => {
+              
+                user.update({
+                    where : {id : req.params.userId},
+                    username : req.body.username,
+                    email : req.body.email,
+                    password : hash 
+                    
+                  })
+
+                .then(user => {
+                    res.json({status : user.email + ' a été modifier!'})
+                })
+                .catch(err => {
+                    res.send('error crypte' + err)
+                })
+            })
+        
+             
+        }else {
+            res.send('Eutdiant does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    }) 
+});
+
+
+
 
 
 

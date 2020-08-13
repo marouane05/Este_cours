@@ -28,9 +28,15 @@ export default class EtudiantList extends Component {
                 <td>  {this.props.obj.cne}</td>
 
         <td>{this.props.obj.email}</td>
-        <td>{this.props.obj.FiliereId}</td>
+        {/*<td>{this.props.obj.FiliereId}</td> */}
 
-                 <td>  <button  onClick={(e) => this.delete(this.props.obj.id)} className="btn btn-danger">Delete</button> </td> 
+                 <td>  
+                 <button onClick={(e) => {
+      e.preventDefault();
+      window.location.href=`/etudiant/update/${this.props.obj.id}`;
+      }} class="btn btn-secondary">Modifier</button>
+                     
+                     <button  onClick={(e) => this.delete(this.props.obj.id)} className="btn btn-danger">Delete</button> </td> 
         
             </tr>
         

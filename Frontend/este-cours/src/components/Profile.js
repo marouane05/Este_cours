@@ -5,8 +5,10 @@ class Profile extends Component {
   constructor() {
     super()
     this.state = {
+      id : '',
       username: '',
       email: '',
+      type :'',
       errors: {}
     }
   }
@@ -15,8 +17,10 @@ class Profile extends Component {
     const token = localStorage.usertoken
     const decoded = jwt_decode(token)
     this.setState({
+      id : decoded.id , 
       username: decoded.username,
-      email: decoded.email
+      email: decoded.email,
+      type : decoded.type
     })
   }
 
@@ -36,6 +40,22 @@ class Profile extends Component {
               <tr>
                 <td>Email</td>
                 <td>{this.state.email}</td>
+              </tr>
+              <tr>
+                <td>Type</td>
+                <td>{this.state.type}</td>
+              </tr>
+              <tr>
+                <td>Id</td>
+                <td>{this.state.id}</td>
+              </tr>
+
+              <tr>
+
+              <button onClick={(e) => {
+      e.preventDefault();
+      window.location.href=`/users/update/${this.props.obj.id}`;
+      }} class="btn btn-secondary">Modifier</button>
               </tr>
             </tbody>
           </table>
