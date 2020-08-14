@@ -134,6 +134,27 @@ users.get('/profile' ,(req , res) =>{
 })
 
 
+users.post('/profile' ,(req , res) =>{
+    //var decoded = jwt.verify(req.headers['autorisation'] ,process.env.SECRET_KEY)
+   // const decoded = jwt_decode(req.body.token)
+    User.findOne({ 
+         where : {
+        id : req.body.id
+    }
+})
+    .then(user =>{
+        if(user){
+            res.json(user)
+        }else {
+            res.send('User does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    })
+})
+
+
+
 users.put('/:userId' , (req, res) =>{
 
     User.findOne({
@@ -149,9 +170,24 @@ where : {id : req.params.userId},
                     password : hash 
                     
                   })
-
+                  
                 .then(user => {
-                    res.json({status : user.email + ' a été modifier!'})
+                     res.json({status : user.email + ' a été modifier!'})
+                 /* 
+                 const payload = {
+                        id : user.id,
+                        username : user.username,
+                        email : user.email,
+                        type : user.type
+                    }
+                 
+                        
+                        let token = jwt.sign(payload, process.env.SECRET_KEY, {
+                        expiresIn : 1440
+                    })
+                 */   
+                   
+                   // res.send(token)
                 })
                 .catch(err => {
                     res.send('error crypte' + err)

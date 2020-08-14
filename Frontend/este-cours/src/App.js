@@ -12,6 +12,7 @@ import ShowProfesseur from './components/Professeurs/ShowProfesseur';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import UpdateProfesseur from './components/Professeurs/UpdateProfesseur';
 import UpdateEtudiant from './components/Etudiants/UpdateEtudiant';
+import UpdateUsers from './components/Users/UpdateUsers';
 
 class App extends Component {
   render() {
@@ -31,6 +32,7 @@ class App extends Component {
           <Route exact path="/professeur/show" component={ShowProfesseur} />
           <Route path="/professeur/update/:professeurId" component={UpdateProfesseur}/>
           <Route path="/etudiant/update/:etudiantId" component={UpdateEtudiant}/>
+          <Route path="/users/update" component={UpdateUsers}/>
         </div>
       </div>
     </Router>

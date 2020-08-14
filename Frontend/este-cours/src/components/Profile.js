@@ -54,7 +54,7 @@ class Profile extends Component {
 
               <button onClick={(e) => {
       e.preventDefault();
-      window.location.href=`/users/update/${this.props.obj.id}`;
+      window.location.href=`/users/update`;
       }} class="btn btn-secondary">Modifier</button>
               </tr>
             </tbody>
