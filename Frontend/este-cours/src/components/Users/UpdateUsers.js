@@ -32,9 +32,30 @@ export default class UpdateUsers extends Component{
            id : decoded.id
         })
         .then(res => {
-         const  users = res.data 
-          this.setState({  users });
-          console.log('result '+ users) 
+            const users=[]
+         let  users1 = res.data 
+          users["username"]= res.data["username"]
+          users["email"]= res.data["email"]
+          users["type"]= res.data["type"]
+         console.log('type '+ res.data["type"]) 
+
+          if(res.data["type"]=="etudiant"){
+          axios.get(`/etudiant/detail/${res.data["id"]}`).then(res=>{
+            users["tele"]= res.data["tele"]
+           
+       
+        console.log('tableau'+res.data["tele"])
+         this.setState({  users });
+          })
+                                        }
+
+   else if (res.data["type"]=="professeur"){
+    axios.get(`/professeur/detail/${res.data["id"]}`).then(res=>{
+
+    })
+   
+}     
+
         }
       )
     }
@@ -72,7 +93,7 @@ handleSubmit() {
 email : this.state.users.email,
 username : this.state.users.username,
 type : this.state.users.type ,
-password : this.state.users.password 
+ 
 
     }
     
@@ -120,12 +141,12 @@ password : this.state.users.password
                         <label className="col-sm-2 control-label required" htmlFor="blog_post_body">password</label>
                         <div className="col-sm-10">
                             <input type="text"
-                             name="password"
+                             name="tele"
                                    id="blog_post_body"
                                    required="required"
-                                type ="password"
-                                 
-                                   onChange={this.state.users.password}
+                             
+                                   value={this.state.users.tele}
+                                   onChange={this.handleChange}
                                    className="form-control"/>
                         </div>
                     </div>

@@ -11,8 +11,8 @@ const db = require("./Models/index");
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
 });
-
 */
+
 /*
 var connection = mysql.createConnection({
   host     : 'localhost',

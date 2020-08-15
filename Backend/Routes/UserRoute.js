@@ -95,7 +95,8 @@ users.post('/register' , (req , res ) => {
                 userData.password = hash
                 User.create(userData)
                 .then(user => {
-                    res.json({status : user.email + ' registred !'})
+                   // res.json({status : user.email + ' registred !'})
+                    res.send(user)
                 })
                 .catch(err => {
                     res.send('error' + err)
@@ -137,14 +138,16 @@ users.get('/profile' ,(req , res) =>{
 users.post('/profile' ,(req , res) =>{
     //var decoded = jwt.verify(req.headers['autorisation'] ,process.env.SECRET_KEY)
    // const decoded = jwt_decode(req.body.token)
-    User.findOne({ 
+  
+   User.findOne({ 
          where : {
         id : req.body.id
     }
 })
     .then(user =>{
         if(user){
-            res.json(user)
+           res.json(user)
+         //   res.json('pass : '+bcryptjs.decrypt(user.password))
         }else {
             res.send('User does not exists')
         }

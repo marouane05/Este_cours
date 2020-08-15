@@ -25,7 +25,7 @@ professeur.post('/add' , (req , res ) => {
        naissance: req.body.naissance,
        tele : req.body.tele ,
        email : req.body.email ,
-      
+       userId : parseInt(req.body.userId),
        createdAt: new Date(),
        updatedAt: new Date()
     }

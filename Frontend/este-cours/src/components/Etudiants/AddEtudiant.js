@@ -26,18 +26,7 @@ export default class AddEtudiant extends Component {
 
     onSubmit(e) {
         e.preventDefault()
-        const EtudiantData ={
-            nom :this.state.nom,
-            prenom :this.state.prenom,
-            cne : this.state.cne,
-            naissance:this.state.naissance,
-            tele :this.state.tele,
-            email :this.state.email, 
-            filiere: this.state.FiliereId,
-
-
-
-        }
+        
 
 
         const UserData = {
@@ -46,18 +35,33 @@ export default class AddEtudiant extends Component {
             type : 'etudiant',
             password : this.state.nom+'@'+this.state.cne
         }
-        axios.post("/etudiant/add", EtudiantData, {
+        axios.post("/users/register", UserData, {
         }).then(res => {
-           
-            console.log(res)
-       {     axios.post("/users/register", UserData, {
+            console.log('res '+res.data["id"])
+            const EtudiantData ={
+                userId: res.data["id"] ,
+                nom :this.state.nom,
+                prenom :this.state.prenom,
+                cne : this.state.cne,
+                naissance:this.state.naissance,
+                tele :this.state.tele,
+                email :this.state.email, 
+                filiere: this.state.FiliereId,
+    
+    
+    
+            }
+
+            
+
+            axios.post("/etudiant/add", EtudiantData, {
             }).then(res => {
                
                 console.log(res)
             })
             .catch(err =>{
                 console.log(err)
-            }) }
+            }) 
         })
         .catch(err =>{
             console.log(err)

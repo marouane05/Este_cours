@@ -28,6 +28,7 @@ etudiant.post('/add' , (req , res ) => {
        tele : req.body.tele ,
        email : req.body.email , 
        FiliereId:parseInt(req.body.filiere),
+       userId : parseInt(req.body.userId),
        createdAt: new Date(),
        updatedAt: new Date()
     }
@@ -60,6 +61,7 @@ where : {id : req.params.etudiantId},
                 email : req.body.email,
                 tele : req.body.tele ,
                 FiliereId:parseInt(req.body.filiere),
+              
               }
               )
               res.send('Eutdiant '+etudiant.nom +' '+etudiant.prenom+' est bien modifier')
@@ -125,6 +127,19 @@ where : {id : req.params.etudiantId},
         res.send('error' + err)
     }) 
 });
+etudiant.get('/detail/:userId' , (req, res) =>{
 
+    Etudiant.findOne({
+where : {id : req.params.userId},
+    })    .then(etudiant =>{
+        if(etudiant){
+           res.send(etudiant)
+        }else {
+            res.send('Eutdiant does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    }) 
+});
 
 module.exports = etudiant ;

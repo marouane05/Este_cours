@@ -33,6 +33,8 @@ db.vue = require("./VueModel")(sequelize,Sequelize);
 
 // définition des associations 
 db.professeur.hasMany(db.module,{as:'module'})
+db.user.hasMany(db.etudiant,{as:'etudiant'})
+db.user.hasMany(db.professeur,{as:'professeur'})
 //db.filiere.hasMany(db.professeur,{as:'professeur'});
 db.filiere.hasMany(db.etudiant,{as:'etudiant'});
 db.filiere.hasMany(db.module,{as:'module'});
