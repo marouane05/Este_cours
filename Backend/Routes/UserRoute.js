@@ -209,7 +209,7 @@ where : {id : req.params.userId},
                       })
                       
                     .then(user => {
-                         res.json({status : user.email + ' a été modifier vc pass!'})
+                         res.send(user)
                      /* 
                      const payload = {
                             id : user.id,

@@ -4,7 +4,8 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode'
 import PropTypes from 'prop-types';
 import { Toast, ToastBody, ToastHeader,Fade } from 'reactstrap';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default class UpdateUsers extends Component{
@@ -134,9 +135,16 @@ tele : this.state.users.tele ,
               axios.put(`/users/${this.state.users.id}`,data,{})
                 .then(res => {
             
-            console.log('result update'+ res.data) 
+            console.log('result update'+ res.data)
+            if(res.data["id"]){
+                toast.success("Bien modifier !");
+            } else {
+                toast.error("Non modifier")
+            }
+            
                      })
-                    .catch(err => console.log(err));
+                    .catch(err => {console.log(err)
+                    toast.error("Non modifier")});
 
 
 
@@ -153,10 +161,11 @@ tele : this.state.users.tele ,
        
        console.log('result update'+ res.data) 
     })
-      .catch(err => console.log(err));
+      .catch(err => {console.log(err)
+        toast.error("Non modifier")});
     }    
 
-
+    
  
  }
 
@@ -174,7 +183,7 @@ tele : this.state.users.tele ,
     }
  }
 
-
+ notify = () => toast.success("Wow so easy !");
 
     render() {
         return (
@@ -342,8 +351,8 @@ tele : this.state.users.tele ,
                     </div> : <div></div>
     }             
 
-{<div className="form-row justify-content-center">
-                         {/*debut column */}
+{/*<div className="form-row justify-content-center">
+                       
                     <div className="col-md-8">
                     <div className="md-form form-group">
                         
@@ -356,7 +365,28 @@ tele : this.state.users.tele ,
             Vos données sont modifiés avec succes !
           </ToastBody>
         </Toast>
-      </div></div></div></div>}
+</div></div></div></div> */
+
+
+<div>
+       
+        <ToastContainer
+position="bottom-center"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/> 
+      </div>
+
+
+
+
+}
             </form>
           
             </div>
