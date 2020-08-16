@@ -47,31 +47,57 @@ etudiant.post('/add' , (req , res ) => {
 // update etudiant 
 
 etudiant.put('/:etudiantId' , (req, res) =>{
+if( req.body.sender=="notAdmin"){
+    Etudiant.findOne({
+        where : {id : req.params.etudiantId},
+            })    .then(etudiant =>{
+                if(etudiant){
+                    etudiant.update({
+                        where : {id : req.params.etudiantId},
+                     
+                        email : req.body.email,
+                        tele : req.body.tele ,
+                        
+                      
+                      }
+                      )
+                      res.send('Eutdiant '+etudiant.nom +' '+etudiant.prenom+' est bien modifier')
+                }else {
+                    res.send('Eutdiant does not exists')
+                }
+            }).catch(err =>{
+                res.send('error' + err)
+            }) 
+        
+} else {
 
     Etudiant.findOne({
-where : {id : req.params.etudiantId},
-    })    .then(etudiant =>{
-        if(etudiant){
-            etudiant.update({
-                where : {id : req.params.etudiantId},
-                nom : req.body.nom,
-                prenom : req.body.prenom,
-                cne : req.body.cne,
-                naissance: req.body.naissance,
-                email : req.body.email,
-                tele : req.body.tele ,
-                FiliereId:parseInt(req.body.filiere),
-              
-              }
-              )
-              res.send('Eutdiant '+etudiant.nom +' '+etudiant.prenom+' est bien modifier')
-        }else {
-            res.send('Eutdiant does not exists')
-        }
-    }).catch(err =>{
-        res.send('error' + err)
-    }) 
-});
+        where : {id : req.params.etudiantId},
+            })    .then(etudiant =>{
+                if(etudiant){
+                    etudiant.update({
+                        where : {id : req.params.etudiantId},
+                        nom : req.body.nom,
+                        prenom : req.body.prenom,
+                        cne : req.body.cne,
+                        naissance: req.body.naissance,
+                        email : req.body.email,
+                        tele : req.body.tele ,
+                        FiliereId:parseInt(req.body.filiere),
+                      
+                      }
+                      )
+                      res.send('Eutdiant '+etudiant.nom +' '+etudiant.prenom+' est bien modifier')
+                }else {
+                    res.send('Eutdiant does not exists')
+                }
+            }).catch(err =>{
+                res.send('error' + err)
+            }) 
+        
+
+}
+}); 
 
 
 // delete etudiant

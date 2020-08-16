@@ -164,18 +164,19 @@ users.put('/:userId' , (req, res) =>{
 where : {id : req.params.userId},
     })    .then(user =>{
         if(user){
-            bcryptjs.hash(req.body.password, 10, (err,hash) => {
+            if(!req.body.password){
+ 
               
                 user.update({
                     where : {id : req.params.userId},
                     username : req.body.username,
                     email : req.body.email,
-                    password : hash 
+               
                     
                   })
                   
                 .then(user => {
-                     res.json({status : user.email + ' a été modifier!'})
+                     res.json({status : user.email + ' a été modifier sans pass!'})
                  /* 
                  const payload = {
                         id : user.id,
@@ -195,7 +196,42 @@ where : {id : req.params.userId},
                 .catch(err => {
                     res.send('error crypte' + err)
                 })
-            })
+     
+            } else {
+                bcryptjs.hash(req.body.password, 10, (err,hash) => {
+              
+                    user.update({
+                        where : {id : req.params.userId},
+                        username : req.body.username,
+                        email : req.body.email,
+                        password : hash 
+                        
+                      })
+                      
+                    .then(user => {
+                         res.json({status : user.email + ' a été modifier vc pass!'})
+                     /* 
+                     const payload = {
+                            id : user.id,
+                            username : user.username,
+                            email : user.email,
+                            type : user.type
+                        }
+                     
+                            
+                            let token = jwt.sign(payload, process.env.SECRET_KEY, {
+                            expiresIn : 1440
+                        })
+                     */   
+                       
+                       // res.send(token)
+                    })
+                    .catch(err => {
+                        res.send('error crypte' + err)
+                    })
+                })
+            }
+           
         
              
         }else {
