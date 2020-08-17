@@ -13,6 +13,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import UpdateProfesseur from './components/Professeurs/UpdateProfesseur';
 import UpdateEtudiant from './components/Etudiants/UpdateEtudiant';
 import UpdateUsers from './components/Users/UpdateUsers';
+import AddModule from './components/Module/AddModule';
 
 class App extends Component {
   render() {
@@ -33,6 +34,7 @@ class App extends Component {
           <Route path="/professeur/update/:professeurId" component={UpdateProfesseur}/>
           <Route path="/etudiant/update/:etudiantId" component={UpdateEtudiant}/>
           <Route path="/users/update" component={UpdateUsers}/>
+          <Route path="/module/add" component={AddModule} />
         </div>
       </div>
     </Router>

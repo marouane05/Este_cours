@@ -57,8 +57,8 @@ class Landing extends Component {
 
         
         <li className="nav-item">
-          <Link to="/addCour" className="nav-link">
-            Add Cours
+          <Link to="/module/add" className="nav-link">
+            Ajouter Module
           </Link>
         </li>
 

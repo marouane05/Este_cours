@@ -92,7 +92,7 @@ professeur.get('/All' , (req , res) => {
        
             })    .then(professeur =>{
                 if(professeur){
-                   res.json(professeur)
+                   res.send(professeur)
                 }else {
                     res.send('Professeur does not exists')
                 }

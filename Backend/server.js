@@ -43,6 +43,9 @@ app.use('/etudiant',Etudiant)
 var Professeur = require('./Routes/ProfesseurRoute');
 app.use('/professeur',Professeur)
 
+var Module = require('./Routes/ModuleRoute')
+app.use('/module',Module)
+
 app.listen(4000, () => {
   console.log('Example app listening on port 4000!')
 });
