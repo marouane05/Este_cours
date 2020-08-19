@@ -1,17 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import {
-    Button,
-    Input,
-    Footer,
-    Card,
-    CardBody,
-    CardImage,
-    CardTitle,
-    CardText
-  } from "mdbreact";
+
 import axios from 'axios';
 import TextInput from 'react-autocomplete-input';
-
+import { ToastContainer, toast } from 'react-toastify';
 import '../../styles/AutoComplete.css'
 export default class AddModule extends Component {
     
@@ -72,12 +63,13 @@ export default class AddModule extends Component {
         axios.post("/module/add", ModuleData, {
         }).then(res => {
             console.log('res '+res.data["id"])
-           
+            toast.success("Bien modifier !");
 
         
         })
         .catch(err =>{
             console.log(err)
+            toast.error("Bien modifier !");
         })
 
         
@@ -96,39 +88,7 @@ export default class AddModule extends Component {
         // fields[e.target.name]= e.target.value ;
     }
 
-    handleChange2 = (e) => {
-       
-        this.setState({ professeur : e.target.value });
-      };
-
-
-      renderCountry = prof => {
-      /*  const { search } = this.state;
-        var code = country.code.toLowerCase();
-    */
-        /*if( search !== "" && country.name.toLowerCase().indexOf( search.toLowerCase() ) === -1 ){
-            return null
-        }*/
     
-        return (
-          <div className="col-md-3" style={{ marginTop: "20px" }}>
-            <Card>
-              <CardBody>
-                <p className="">
-                 
-                </p>
-                <CardTitle>
-                  {prof.nom.substring(0, 15) +' '+ prof.prenom}
-                  {prof.nom.length > 15 && "..."}
-                </CardTitle>
-              </CardBody>
-            </Card>
-          </div>
-        );
-      };
-
-
-
 
 
       onChange = e => {
@@ -211,7 +171,8 @@ export default class AddModule extends Component {
           activeSuggestion: 0,
           filteredSuggestions: [],
           showSuggestions: false,
-          userInput: e.currentTarget.innerText
+          userInput: e.currentTarget.innerText,
+          professeur : e.target.getAttribute("data-index")
         });
     
     //  console.log('id est: '+e.currentTarget.innerText.substring(0, e.currentTarget.innerText.indexOf('.')));
@@ -222,7 +183,7 @@ export default class AddModule extends Component {
 
 
 
-      renderCountry2 = prof => {
+      renderProf = prof => {
         /*  const { search } = this.state;
           var code = country.code.toLowerCase();
       */
@@ -347,28 +308,6 @@ export default class AddModule extends Component {
 
 
 
-                        
-                     {/*   <div className="col">
-                <Input
-                  label="Search Country"
-                  icon="search"
-                  onChange={this.handleChange2}
-                />
-              </div>
-        */}
-        
-         { /*   <select className="custom-select" id="inputGroupSelect01" 
-            >
-              {filteredCountries.map(prof => {
-                return this.renderCountry2(prof);
-              })}
-              </select>
-           
-            */}
-
-
-
-
 
  
 
@@ -414,7 +353,7 @@ export default class AddModule extends Component {
                         <div className="col-md-6">
                         <div className="md-form form-group">
                         <label htmlFor="nom">choisir professeur :</label>
-                        {this.renderCountry2(this.state.professeurs)}
+                        {this.renderProf(this.state.professeurs)}
                         </div>
                        </div>
 
@@ -436,6 +375,22 @@ export default class AddModule extends Component {
                         <div className="col-md-6 offset-md-3">
                             <button className="btn btn-outline-primary" type="submit">Ajouter</button>
                         </div>
+                        <br></br>
+                        <div>
+       
+        <ToastContainer
+position="bottom-center"
+autoClose={3000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+/> 
+      </div>
+
                     </form>
                 {/* </div> */}
             </div>

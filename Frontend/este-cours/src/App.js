@@ -14,6 +14,9 @@ import UpdateProfesseur from './components/Professeurs/UpdateProfesseur';
 import UpdateEtudiant from './components/Etudiants/UpdateEtudiant';
 import UpdateUsers from './components/Users/UpdateUsers';
 import AddModule from './components/Module/AddModule';
+import ShowModules from './components/Module/ShowModules';
+import ProfesseurLive from './components/Professeurs/ProfesseurLive';
+
 
 class App extends Component {
   render() {
@@ -35,6 +38,9 @@ class App extends Component {
           <Route path="/etudiant/update/:etudiantId" component={UpdateEtudiant}/>
           <Route path="/users/update" component={UpdateUsers}/>
           <Route path="/module/add" component={AddModule} />
+          <Route path="/module/get" component={ShowModules} />
+          <Route path="/professeur/live" component={ProfesseurLive}/>
+         
         </div>
       </div>
     </Router>
