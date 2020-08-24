@@ -9,7 +9,7 @@ import AddEtudiant from './components/Etudiants/AddEtudiant'
 import ShowEtudiant from './components/Etudiants/ShowEtudiant'
 import AddProfesseur from './components/Professeurs/AddProfesseur'
 import ShowProfesseur from './components/Professeurs/ShowProfesseur';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route  } from 'react-router-dom'
 import UpdateProfesseur from './components/Professeurs/UpdateProfesseur';
 import UpdateEtudiant from './components/Etudiants/UpdateEtudiant';
 import UpdateUsers from './components/Users/UpdateUsers';
@@ -19,15 +19,18 @@ import ProfesseurLive from './components/Professeurs/ProfesseurLive';
 
 
 class App extends Component {
+  
   render() {
+   
     return (
-      <Router>
+    /*  <Router>
       <div className="App">
       
       <Navbar />
       <Route exact path="/" component={Landing} />
         <div className="container">
          
+        
           <Route exact path="/login" component={Login} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/etudiant/add" component={AddEtudiant} />
@@ -43,7 +46,10 @@ class App extends Component {
          
         </div>
       </div>
-    </Router>
+    </Router> */
+   <Router>
+    <Navbar/>
+ </Router>
   )
     }
 }

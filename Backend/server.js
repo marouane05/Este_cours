@@ -6,7 +6,7 @@ var path = require('path');
 var cors = require('cors');
 var bodyParser=require("body-parser");
 const db = require("./Models/index");
-
+const session = require('express-session') 
 /*
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
@@ -32,6 +32,21 @@ global.db = connection;
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 app.use(cors()) ;
+// Session Setup 
+app.use(session({ 
+  
+  // It holds the secret key for session 
+  secret: 'Your_Secret_Key', 
+
+  // Forces the session to be saved 
+  // back to the session store 
+  resave: true, 
+
+  // Forces a session that is "uninitialized" 
+  // to be saved to the store 
+  saveUninitialized: true
+})) 
+
 
 
 var Users = require('./Routes/UserRoute');

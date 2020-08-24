@@ -24,6 +24,7 @@
     "react-filter-search": "^1.0.11",
     "react-helmet": "^6.1.0",
     "react-livestream": "^1.0.11",
+    "react-mdl": "^2.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-sidenav": "^4.0.6",

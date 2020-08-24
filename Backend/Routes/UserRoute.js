@@ -1,5 +1,6 @@
 var express = require('express');
 var cors = require('cors');
+const session = require('express-session') 
 const users = express.Router()
 var bcryptjs = require('bcryptjs');
 var mysql = require('mysql');
@@ -54,6 +55,8 @@ users.post('/login' ,(req , res) =>{
             let token = jwt.sign(payload, process.env.SECRET_KEY, {
                 expiresIn : 1440
             })
+            session.SECRET_KEY = token ;
+            session.name = user.type ;
         res.send(token)
         }else{
             res.json({error : "User does'nt exists"})

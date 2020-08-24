@@ -6,8 +6,10 @@ var mysql = require('mysql');
 var http = require('http');
 var path = require('path');
 var jwt = require('jsonwebtoken');
+
 const { request } = require('express');
 const db = require("../Models");
+const session = require('express-session');
 const Etudiant = db.etudiant;
 const Filiere = db.filiere ; 
 const Op = db.Sequelize.Op;
@@ -16,10 +18,35 @@ const Op = db.Sequelize.Op;
 etudiant.use(cors());
 process.env.SECRET_KEY = 'secret'
 
+/*
+const authenticateJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        jwt.verify(req.headers.authorization.split(' ')[1], session.SECRET_KEY, (err, user) => {
+            if (err) {
+                console.log('token 1'+req.headers.authorization)
+               console.log('token2' +session.SECRET_KEY)
+                
+                return res.sendStatus(403);
+            }
+
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+};
+
+*/
 
 // create etudiant 
 etudiant.post('/add' , (req , res ) => {
-  
+
+
     const etudiantData = {
        nom : req.body.nom,
        prenom : req.body.prenom,
@@ -123,6 +150,17 @@ etudiant.delete('/:etudiantId' , (req , res) => {
 // Get All etudiant 
 
 etudiant.get('/All' , (req , res) => {
+  //  jwt.verify(req.body.token,session.SECRET_KEY)
+  const authHeader = req.headers.authorization;
+  if(authHeader){
+    const token = authHeader.split(' ')[1].toString();
+  jwt.verify(token, 'secret', (err,res1 ) => {
+      if(err){
+        console.log('token 1'+token)
+        console.log('token2' +session.SECRET_KEY)
+       //return res1.sendStatus(403);
+       res.send(err)
+      } else {
     Etudiant.findAll({
        
             })    .then(etudiant =>{
@@ -134,6 +172,11 @@ etudiant.get('/All' , (req , res) => {
             }).catch(err =>{
                 res.send('error' + err)
             }) 
+      }
+}) 
+
+}
+
 
 });
 
