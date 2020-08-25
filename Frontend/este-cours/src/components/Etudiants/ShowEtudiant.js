@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import jwt_decode from 'jwt-decode'
 import EtudiantList from './EtudiantList'
 
 export default class ShowEtudiant extends Component {
@@ -17,8 +18,10 @@ state = {
     find_filiere : ''
 }
     componentDidMount(){
+        const token = localStorage.usertoken
+        const decoded = jwt_decode(token)
         
-        axios.get(`/etudiant/All`)
+        axios.get(`/etudiant/All`,{ headers: {"Authorization" : `Bearer ${token}`} })
       .then(res => {
         const etudiants = res.data;
         this.setState({ etudiants });

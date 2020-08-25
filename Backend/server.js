@@ -32,6 +32,7 @@ global.db = connection;
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 app.use(cors()) ;
+app.use(express.static(path.resolve('./Videos')));
 // Session Setup 
 app.use(session({ 
   
@@ -60,6 +61,10 @@ app.use('/professeur',Professeur)
 
 var Module = require('./Routes/ModuleRoute')
 app.use('/module',Module)
+
+var CoursExistant = require('./Routes/CoursExistantRoute')
+app.use('/cours',CoursExistant)
+
 
 app.listen(4000, () => {
   console.log('Example app listening on port 4000!')
