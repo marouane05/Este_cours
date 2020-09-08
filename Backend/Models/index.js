@@ -44,6 +44,11 @@ db.etudiant.hasMany(db.commentaire,{as:'commentaire'})
 db.cours.hasMany(db.commentaire,{as:'commentaire'})
 db.etudiant.hasMany(db.vue,{as:'vue'})
 db.cours.hasMany(db.vue,{as:'vue'})
+
+db.filiere.hasMany(db.coursExistant,{as:'coursExistant'});
+db.professeur.hasMany(db.coursExistant,{as: 'coursExistant'});
+db.module.hasMany(db.coursExistant,{as: 'coursExistant'});
+
 /*
 db.professeur.belongsTo(db.filiere, {
   foreignKey: "filiere_id",

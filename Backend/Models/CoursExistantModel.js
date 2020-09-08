@@ -6,6 +6,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING , 
         required: true
       },
+      description : {
+        type : Sequelize.STRING,
+        required : true 
+      },
+      typeCours :{
+        type : Sequelize.STRING,
+        required : true 
+      },
      url : {
          type : Sequelize.STRING(1234) ,
          required : true 

@@ -7,11 +7,17 @@ var cors = require('cors');
 var bodyParser=require("body-parser");
 const db = require("./Models/index");
 const session = require('express-session') 
+
+
+// Attention il permet de réinitialiser toute la base de données
+
 /*
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
 });
+
 */
+
 
 /*
 var connection = mysql.createConnection({
@@ -29,10 +35,11 @@ connection.connect(function(err) {
 global.db = connection;
  */
 
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended : true ,limit: "220mb",parameterLimit: 50000 }));
+
+app.use(bodyParser.json({ limit: "220mb" }))
 app.use(cors()) ;
-app.use(express.static(path.resolve('./Videos')));
+app.use(express.static(path.resolve('./Cours')));
 // Session Setup 
 app.use(session({ 
   

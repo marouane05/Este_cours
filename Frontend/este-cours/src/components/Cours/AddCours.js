@@ -1,13 +1,26 @@
 import React, { Component } from 'react'
 import jwt_decode from 'jwt-decode'
 import axios from 'axios';
-import ModuleSelection from './ModuleSelection'
+//import ModuleSelection from './ModuleSelection'
 import Select from 'react-select';
-import '../../styles/Upload.css'
+//import '../../styles/Upload.css';
+//import {DropZone} from 'react-dropzone-uploader'
+//import 'react-dropzone-uploader/dist/styles.css'
+//import FineUploaderTraditional from "fine-uploader-wrappers";
+//import Gallery from "react-fine-uploader";
+import {Progress} from 'reactstrap';
+//import "react-fine-uploader/gallery/gallery.css";
+import Button from '@material-ui/core/Button';
+import {DropzoneDialog, DropzoneArea} from 'material-ui-dropzone'
+
+import ReactFileReader from 'react-file-reader';
 /*const options = [
     
      ];
 */
+
+
+  
 export default class AddCours extends Component {
  constructor(){
      super()
@@ -24,7 +37,16 @@ export default class AddCours extends Component {
         IntituleCours :'',
         myArr : [] , 
         cours : '',
-        selectOptions : [],
+       
+        CoursOptions : [],
+        base64:'',
+        loaded:0 ,
+        isLoaded : false ,
+        open: false,
+        files: [] ,
+        tabBase64 : [],
+        courses : [] ,
+        typeCours : '',
  }
     this.onFileChange = this.onFileChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -32,48 +54,94 @@ export default class AddCours extends Component {
  }   
  
 
+
+
+
  
  onFileChange(e) {
-    this.setState({ cours: e.target.files[0] })
+  let reader = new FileReader();
+  reader.readAsDataURL(e.target.files[0]);
+  let file = e.target.files[0]
+  reader.onloadend = (file) => {
+    this.setState({
+      cours: file,
+      base64: reader.result
+    });
+  };
+
 }
+
+
+
+
+
 
 onSubmit(e) {
     e.preventDefault()
-    const formData = new FormData()
+   // const formData = new FormData()
   
-    
-   
-  formData.append('file' , this.state.cours)
+    console.log('longueur base64: '+this.state.tabBase64[0])
+    console.log('longueur Files: '+this.state.courses.length)
+ // formData.append('file' ,this.state.cours)
 const CoursDetail ={
     intitule : this.state.intitule ,
     filiere : this.state.FiliereCours,
     professeur : localStorage.identification ,
     module : this.state.ModuleCours,
     description : this.state.description,
+    typeCours : this.state.typeCours,
     url : ''+localStorage.nom+'/'+this.state.IntituleCours ,
 }
+
+
+
 
 axios.post('/cours/add',CoursDetail, {
     }).then(res => {
         //this.props.history.push('/All')
 console.log('send'+CoursDetail.url)
-        axios.post(`/cours/upload/${localStorage.nom}/${this.state.IntituleCours}`,formData, {
-        }).then(res => {
+
+
+//console.log('base: '+this.state.base64)
+
+     axios.post(`/cours/uploads/${this.state.typeCours}/${localStorage.nom}/${this.state.IntituleCours}/${this.state.intitule}`,{
+       pdf : this.state.tabBase64 , 
+     }
+   ,{
+    onUploadProgress: ProgressEvent => {
+      this.setState({
+        loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
+        isLoaded : true
+    })
+    
+},
+
+    
+   }).then(res => {
             //this.props.history.push('/All')
-            console.log(res)
-        }) 
+        if(this.state.loaded==100){   
+          setTimeout(() => {
+            window.location.reload()
+          }, 4000);
+                       console.log(res)
+        }
+                      }) 
+
+
+  
+  
+      
+
+
+
+
+
 
         
 
-        console.log(''+res)
+       
     }) 
-
-
-   /* axios.post("http://localhost:4000/cours/addCour", formData, {
-    }).then(res => {
-        //this.props.history.push('/All')
-        console.log(res)
-    }) */
+ 
 }
 handleChange = (e) =>{
     e.preventDefault()
@@ -128,17 +196,151 @@ handleChange2(e){
     console.log(`Option selected:`,this.state.FiliereCours);
    }
 
+
+handleChange3(e){
+    this.setState({typeCours : e.cours})
+    console.log(`Option selected:`,this.state.typeCours);
+ }
+
+
+
+   handleFiles = files => {
+    this.setState({ cours: files[0] })
+    console.log(files)
+  }  
+
+  //**************** New  */
+
+  handleClose() {
+    this.setState({
+        open: false
+    });
+}
+
+handleSave(files) {
+    //Saving files to state for further use and closing Modal.
+  
+    let file = []
+    let filesData = []
+    let Base64Tab = []
+    for(let i=0;i < files.length ; i++){
+      let reader = new FileReader();
+      console.log('size '+files.length)
+      reader.readAsDataURL(files[i]);
+      file[i] = files[i]
+      var fileRecu = file[i];
+      reader.onloadend =(fileRecu) =>{
+filesData[i] = fileRecu ;
+Base64Tab[i] = reader.result
+
+      }
+/*this.state.courses[i] = filesData[i]
+this.state.tabBase64[i]= Base64Tab[i]
+    */  }
    
+    
+this.setState({
+  courses : filesData,
+  tabBase64 : Base64Tab
+})
+
+
+
+    this.setState({
+        files: files,
+        open: false ,
+       
+    });
+}
+
+handleOpen() {
+    this.setState({
+        open: true,
+    });
+}
+
+
+renderSwitch(param) {
+  switch(param) {
+    case 'video':
+      return  <div> <Button onClick={this.handleOpen.bind(this)}
+                
+      >
+        Ajouter Video (Max 100 Mo)
+      </Button>
+      <DropzoneArea
+          open={this.state.open}
+          onSave={this.handleSave.bind(this)}
+          onChange = {this.handleSave.bind(this)}
+       //   acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
+          acceptedFiles={['video/mp4']}
+          showPreviews={false}
+          maxFileSize={100000000}
+          onClose={this.handleClose.bind(this)}
+      />
+<Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
+     
+  </div> ;
+    case 'document':
+      return   <div>
+      <Button onClick={this.handleOpen.bind(this)}
+      
+      >
+        Ajouter Document (Max 100 Mo)  
+      </Button>
+      <DropzoneArea
+          open={this.state.open}
+          onSave={this.handleSave.bind(this)}
+          onChange = {this.handleSave.bind(this)}
+       //   acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
+          acceptedFiles={['application/pdf']}
+          showPreviews={false}
+          maxFileSize={100000000}
+          onClose={this.handleClose.bind(this)}
+      />
+
+<Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
+  </div> ;  
+    default:
+      return <div></div>;
+  }
+}
+
+
+
 
 
     render() {
+     
+      const {
+        isValid
+      } = this.props
+      
+      const customStyles = {
+        control: (base, state) => ({
+          ...base,
+          // state.isFocused can display different borderColor if you need it
+          borderColor: state.isFocused ?
+            '#ddd' : isValid ?
+            '#ddd' : 'red',
+          // overwrittes hover style
+          '&:hover': {
+            borderColor: state.isFocused ?
+              '#ddd' : isValid ?
+              '#ddd' : 'red'
+          }
+        })
+      }
+      
       
 
       return (
             
-            
+         
       
         <div className="container ">
+ 
+ 
         <br></br>             
     
    
@@ -153,7 +355,7 @@ handleChange2(e){
 
 
          
-                    <form onSubmit={this.onSubmit}>
+                    <form onSubmit={this.onSubmit} >
                         
                     <div className="form-row">
                              {/*debut column */}
@@ -167,6 +369,7 @@ handleChange2(e){
       //  value={moduleChoisi}
         onChange={this.handleChange2.bind(this)}
         options={this.state.selectOptions}
+        styles={ customStyles } {...this.props}
       />
 
           }
@@ -188,7 +391,9 @@ handleChange2(e){
                             name="intitule"
                             placeholder="Entrer un intitule pour le cours"
                             value={this.state.intitule}
-                            onChange={this.handleChange} />
+                            onChange={this.handleChange}
+                            required
+                             />
                         </div>
 
 </div>
@@ -200,14 +405,30 @@ handleChange2(e){
                         <div className="col-md-12">
                         <div className="md-form form-group">
                         <div className="form-group files">
-                            <input type="file" 
+                          {/* <input type="file" 
                              onChange={this.onFileChange}  className = "form-control"/>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
+        }
+      <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
+      */}
 
-                        
+</div>
+</div>
+</div>
+</div>
+      
+
+
+
+<Select
+required="true"
+      //  value={moduleChoisi}
+        onChange={this.handleChange3.bind(this)}
+        options={[{"cours" :"video", "label": "video"},{"cours" : "document", "label":"document"}]}
+        styles={ customStyles } {...this.props}
+     
+     />
+
+            {this.renderSwitch(this.state.typeCours)}
 
 <div className="form-row">
                              {/*debut column */}
@@ -220,18 +441,31 @@ handleChange2(e){
                                        className = "form-control"
                                        value = {this.state.description}
                                        onChange = {this.handleChange} 
+                                       required
                                 />
                         </div>
                         </div>
                         </div>
 
-                        <div className="form-group">
-                            <button className="btn btn-primary" type="submit">Upload</button>
-                        </div>
-                    </form>
-                {/* </div> */}
+       { this.state.ModuleCours =='' || this.state.typeCours =='' || this.state.files.length == 0 ?
+       
+<div align="center"> <h  style={{ color: "red",fontSize:"12px"}}>Merci de remplir les cases rouges ou d'importer le cours</h> </div>
+:
+<div className="form-group" align="center">
+ 
+   <button className="btn btn-primary" type="submit">Upload</button>
+         </div>
+  
+
+}
+    
+    </form>
+    
+                    {/* </div> */}
             </div>
             
+  
+
 </div>
 </div>
 </div>

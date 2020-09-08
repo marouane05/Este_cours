@@ -119,4 +119,19 @@ where : {id : req.params.professeurId},
     }) 
 });
 
+professeur.get('/detail/:userId' , (req, res) =>{
+
+    Professeur.findOne({
+where : {userId : req.params.userId},
+    })    .then(professeur =>{
+        if(professeur){
+           res.send(professeur)
+        }else {
+            res.send('Professeur does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    }) 
+});
+
 module.exports = professeur ;

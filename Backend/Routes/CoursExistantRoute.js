@@ -11,6 +11,7 @@ var fs = require('fs');
 const { request } = require('express');
 const db = require("../Models");
 const session = require('express-session');
+const { professeur } = require('../Models');
 const CoursExistant = db.coursExistant;
 const Filiere = db.filiere ; 
 const Op = db.Sequelize.Op;
@@ -21,6 +22,7 @@ process.env.SECRET_KEY = 'secret'
 
 // pour stocker les fichiers
 var storage = multer.diskStorage({
+   
     destination: function (req, file, cb) {
         console.log('urL1'+req.params.fil)
         var distination ='./Videos/'+req.params.fil+'/'+req.params.module
@@ -60,7 +62,7 @@ var storage = multer.diskStorage({
 
 
   
-  var upload = multer({ storage: storage }).array('file')
+  var upload = multer({ storage: storage  ,limits: { fileSize: 5242880 }}).array('file')
 // fin fichier
   
 
@@ -92,9 +94,14 @@ const authenticateJWT = (req, res, next) => {
 // create coursExistant 
 coursExistant.post('/add' , (req , res ) => {
 
-
+console.log('recu '+ req.body.description)
     const coursExistantData = {
        intitule : req.body.intitule,
+       module : req.body.module,
+       description : req.body.description,
+       FiliereId:parseInt(req.body.filiere),
+       moduleId : parseInt(req.body.module),
+       professeurId : parseInt(req.body.professeur),
        url : req.body.url , 
        createdAt: new Date(),
        updatedAt: new Date()
@@ -211,20 +218,20 @@ where : {id : req.params.userId},
 });
 */
 
-
+/*
 coursExistant.post('/upload/:fil/:module',function(req, res) {
     
     console.log('urL0 V2'+req.params.fil)
     console.log('vv'+req.params.module)
   
 
-   upload(req, res, function (err) {
+  upload(req, res, function (err) {
            if (err instanceof multer.MulterError) {
-               return res.status(500).json(err)
+               return res.send(err)
            } else if (err) {
-               return res.status(500).json(err)
+               return res.send(err)
            }
-      
+      res.send(res)
   
     })
   
@@ -232,7 +239,203 @@ coursExistant.post('/upload/:fil/:module',function(req, res) {
  
 
 });
+ */
+
+ 
+coursExistant.post('/uploads/document/:fil/:module/:intitule',function(req, res) {
+  let size = req.body.pdf.length ;
+  console.log('nombre '+ req.body.pdf.length)
+  for(i=0;i < size ; i++) {
+let encod = req.body.pdf[i].substring(28)      //28 pdf
+    let buff = Buffer.from(encod, 'base64'); 
+ //   console.log('code: '+encod[0])
+
+
+ var distination ='./Cours/'+req.params.fil+'/'+req.params.module
+        
+        var distinationFil ='./Cours/'+req.params.fil
+        var distinationModule = distinationFil+'/'+req.params.module
+        if (!fs.existsSync(distinationFil)){
+           
+            fs.mkdirSync(distinationFil);
+            fs.mkdirSync(distinationModule);
+            'Cours/'+req.params.fil+'/'+req.params.module
+         
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.pdf', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved ');
+              });
+        } else if(!fs.existsSync(distinationModule)){
+            fs.mkdirSync(distinationModule);
+
+            
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'pdf', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved ');
+              });
+
+
+        
+        } else {
+
+            
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.pdf', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved ');
+              });
+           
+        }
+
+
+
+
+
+
+  }
   
+
+
+  
+ return res.status(200).send(req.file)
+ 
+
+});
+
+
+
+
+coursExistant.post('/uploads/video/:fil/:module/:intitule',function(req, res) {
+    let size = req.body.pdf.length ;
+    console.log('nombre '+ req.body.pdf.length)
+    for(i=0;i < size ; i++) {
+  let encod = req.body.pdf[i].substring(22)      //22 video
+      let buff = Buffer.from(encod, 'base64'); 
+   //   console.log('code: '+encod[0])
+  
+  
+   var distination ='./Cours/'+req.params.fil+'/'+req.params.module
+          
+          var distinationFil ='./Cours/'+req.params.fil
+          var distinationModule = distinationFil+'/'+req.params.module
+          if (!fs.existsSync(distinationFil)){
+             
+              fs.mkdirSync(distinationFil);
+              fs.mkdirSync(distinationModule);
+              'Cours/'+req.params.fil+'/'+req.params.module
+           
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+           
+                  if (err) throw err;
+                  console.log('The binary data has been decoded and saved');
+                });
+          } else if(!fs.existsSync(distinationModule)){
+              fs.mkdirSync(distinationModule);
+  
+              
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+           
+                  if (err) throw err;
+                  console.log('The binary data has been decoded and saved ');
+                });
+  
+  
+          
+          } else {
+  
+              
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+           
+                  if (err) throw err;
+                  console.log('The binary data has been decoded and saved ');
+                });
+             
+          }
+  
+  
+  
+  
+  
+  
+    }
+    
+  
+  
+    
+   return res.status(200).send(req.file)
+   
+  
+  });
+
+
+/*
+coursExistant.post('/uploads/:fil/:module/:intitule',function(req, res) {
+  
+let encod = req.body.pdf.substring(22)      //28 pdf
+    let buff = Buffer.from(encod, 'base64'); 
+ //   console.log('code: '+encod[0])
+
+
+ var distination ='./Videos/'+req.params.fil+'/'+req.params.module
+        
+        var distinationFil ='./Videos/'+req.params.fil
+        var distinationModule = distinationFil+'/'+req.params.module
+        if (!fs.existsSync(distinationFil)){
+           
+            fs.mkdirSync(distinationFil);
+            fs.mkdirSync(distinationModule);
+            'Videos/'+req.params.fil+'/'+req.params.module
+         
+            fs.writeFile('./Videos/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'.mp4', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved to my-file.pdf');
+              });
+        } else if(!fs.existsSync(distinationModule)){
+            fs.mkdirSync(distinationModule);
+
+            
+            fs.writeFile('./Videos/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'.mp4', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved to my-file.pdf');
+              });
+
+
+        
+        } else {
+
+            
+            fs.writeFile('./Videos/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'.mp4', buff, (err) => {
+         
+                if (err) throw err;
+                console.log('The binary data has been decoded and saved to my-file.pdf');
+              });
+           
+        }
+
+
+
+
+
+
+    
+  
+
+
+  
+ return res.status(200).send(req.file)
+ 
+
+});
+*/
+
+
+
+
+
 
 
 

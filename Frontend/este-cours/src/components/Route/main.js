@@ -10,19 +10,22 @@ import AddEtudiant from '../Etudiants/AddEtudiant'
 import ShowEtudiant from '../Etudiants/ShowEtudiant'
 import AddProfesseur from '../Professeurs/AddProfesseur'
 import ShowProfesseur from '../Professeurs/ShowProfesseur';
-
+import AddCours from '../Cours/AddCours'
 import UpdateProfesseur from '../Professeurs/UpdateProfesseur';
 import UpdateEtudiant from '../Etudiants/UpdateEtudiant';
 import UpdateUsers from '../Users/UpdateUsers';
 import AddModule from '../Module/AddModule';
 import ShowModules from '../Module/ShowModules';
 import ProfesseurLive from '../Professeurs/ProfesseurLive';
+import AddCoursTest from '../Cours/AddCoursTest'
 // il est essentielle de préciser le role dans chaque route
 const Main = () => ( 
         
          <div >
           <PrivateRoute restricted={true}  exact path="/" component={Landing} roles={['etudiant','professeur']} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/cours/add" component={AddCours} />
+          <Route exact path="/cours/test" component={AddCoursTest} />
           <PrivateRoute restricted={true} exact path="/profile" component={Profile} roles={['etudiant','professeur']}/>
          
           <PrivateRoute restricted={true}  exact path="/etudiant/add" component={AddEtudiant} roles={['etudiant','professeur']} />

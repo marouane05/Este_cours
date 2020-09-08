@@ -29,6 +29,7 @@ class Profile extends Component {
         users["username"]= res.data["username"]
         users["email"]= res.data["email"]
         users["type"]= res.data["type"]
+        
        console.log('type '+ res.data["type"]) 
 
         if(res.data["type"]=="etudiant"){
@@ -39,8 +40,9 @@ class Profile extends Component {
           users["prenom"] = res.data["prenom"]
           users["naissance"] = res.data["naissance"].substring(0,10)
           users["cne"] = res.data["cne"]
-         
-      console.log('tableau'+res.data["tele"])
+          localStorage.setItem('identification',users["IdPersonal"])
+          localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
+      
        this.setState({  users });
         })
                                       }
@@ -49,6 +51,12 @@ class Profile extends Component {
   axios.get(`/professeur/detail/${res.data["id"]}`).then(res=>{
       users["tele"]= res.data["tele"]
       users["IdPersonal"] = res.data["id"]
+      users["nom"] = res.data["nom"]
+          users["prenom"] = res.data["prenom"]
+          users["naissance"] = res.data["naissance"].substring(0,10)
+      localStorage.setItem('identification',users["IdPersonal"])
+          localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
+      this.setState({  users });
   })
  
 }     
@@ -131,11 +139,12 @@ class Profile extends Component {
                     <td>{this.state.users.username}</td> 
               </tr>
 
-              <tr>
-              <div class="col-sm-9 text-secondary">   <td>CNE</td> </div>
-                <td>{this.state.users.cne}</td>
-              </tr>
-
+            
+              {this.state.users.type == "etudiant" ?
+           <tr> <div class="col-sm-9 text-secondary">   <td>CNE</td> </div>
+                     <td>{this.state.users.cne}</td>
+    
+    </tr> : <div></div> }
               <tr>
               <div class="col-sm-9 text-secondary">   <td >Email</td> </div>
                 <td>{this.state.users.email}</td>
