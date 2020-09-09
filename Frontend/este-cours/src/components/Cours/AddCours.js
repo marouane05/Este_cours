@@ -80,8 +80,9 @@ onSubmit(e) {
     e.preventDefault()
    // const formData = new FormData()
   
-    console.log('longueur base64: '+this.state.tabBase64[0])
+  //  console.log('longueur base64: '+this.state.tabBase64[0])
     console.log('longueur Files: '+this.state.courses.length)
+    console.log('longueur Files: '+this.state.courses.intitule)
  // formData.append('file' ,this.state.cours)
 const CoursDetail ={
     intitule : this.state.intitule ,
@@ -90,10 +91,25 @@ const CoursDetail ={
     module : this.state.ModuleCours,
     description : this.state.description,
     typeCours : this.state.typeCours,
-    url : ''+localStorage.nom+'/'+this.state.IntituleCours ,
+    url : ''+localStorage.nom+'/'+this.state.IntituleCours+'/'+this.state.intitule ,
+    nombre : this.state.courses.length,
 }
+/*
+let AllCourses = [{intitule:'',filiere:'',professeur:''
+,module:'',description:'', typeCours :'', url:''}]
 
+for(let i=0; i< this.state.courses.length;i++){
 
+  AllCourses[i].intitule = ''+this.state.IntituleCours+'-chap'+i
+  AllCourses[i].filiere = this.state.FiliereCours
+  AllCourses[i].professeur = localStorage.identification 
+  AllCourses[i].module = this.state.ModuleCours
+  AllCourses[i].description = this.state.description
+  AllCourses[i].typeCours = this.state.typeCours
+  AllCourses[i].url = ''+localStorage.nom+'/'+this.state.IntituleCours 
+console.log('intitule'+AllCourses[i].intitule)
+}
+*/
 
 
 axios.post('/cours/add',CoursDetail, {
@@ -126,22 +142,8 @@ console.log('send'+CoursDetail.url)
                        console.log(res)
         }
                       }) 
+  }) 
 
-
-  
-  
-      
-
-
-
-
-
-
-        
-
-       
-    }) 
- 
 }
 handleChange = (e) =>{
     e.preventDefault()

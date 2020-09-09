@@ -60,7 +60,7 @@ export default class AddCoursTest extends Component {
         <div className='border rounded'>
             <PDFViewer
                 document={{
-                    url: '/karamifahd/Langage%20C/algo0.pdf',
+                    url: '/karamifahd/Langage%20C/algo1.pdf',
                 }}
                 showThumbnail={{ scale: 3 }}
             />

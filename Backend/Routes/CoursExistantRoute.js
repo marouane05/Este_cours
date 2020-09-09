@@ -95,14 +95,22 @@ const authenticateJWT = (req, res, next) => {
 coursExistant.post('/add' , (req , res ) => {
 
 console.log('recu '+ req.body.description)
+var indice = ''
+if(req.body.typeCours=='document'){
+indice ='pdf'
+}else if(req.body.typeCours=='video'){
+indice = 'mp4'
+}
+for(let i=0 ; i< req.body.nombre ; i++){
     const coursExistantData = {
-       intitule : req.body.intitule,
+       intitule : req.body.intitule+'-chap'+i,
        module : req.body.module,
        description : req.body.description,
        FiliereId:parseInt(req.body.filiere),
        moduleId : parseInt(req.body.module),
        professeurId : parseInt(req.body.professeur),
-       url : req.body.url , 
+       typeCours : req.body.typeCours,
+       url : ''+req.body.url+'-chap'+i+'.'+indice , 
        createdAt: new Date(),
        updatedAt: new Date()
     }
@@ -114,6 +122,8 @@ console.log('recu '+ req.body.description)
 .catch(err => {
     res.send('error' + err)
 });
+
+}
 
 })
 
@@ -201,6 +211,46 @@ where : {id : req.params.coursExistantId},
         res.send('error' + err)
     }) 
 });
+
+
+coursExistant.get('/prof/:professeurId' , (req, res) =>{
+
+
+    CoursExistant.findAll({
+where : {professeurId : req.params.professeurId},
+    })    .then(coursExistant =>{
+        if(coursExistant){
+           res.send(coursExistant)
+        }else {
+            res.send('Eutdiant does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    }) 
+});
+
+
+coursExistant.get('/module/:moduleId' , (req, res) =>{
+
+    CoursExistant.findAll({
+where : {moduleId : req.params.moduleId},
+    })    .then(coursExistant =>{
+        if(coursExistant){
+           res.send(coursExistant)
+        }else {
+            res.send('Eutdiant does not exists')
+        }
+    }).catch(err =>{
+        res.send('error' + err)
+    }) 
+});
+
+
+
+
+
+
+
 /*
 CoursExistant.get('/detail/:userId' , (req, res) =>{
 
@@ -261,7 +311,7 @@ let encod = req.body.pdf[i].substring(28)      //28 pdf
             fs.mkdirSync(distinationModule);
             'Cours/'+req.params.fil+'/'+req.params.module
          
-            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.pdf', buff, (err) => {
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.pdf', buff, (err) => {
          
                 if (err) throw err;
                 console.log('The binary data has been decoded and saved ');
@@ -270,7 +320,7 @@ let encod = req.body.pdf[i].substring(28)      //28 pdf
             fs.mkdirSync(distinationModule);
 
             
-            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'pdf', buff, (err) => {
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.pdf', buff, (err) => {
          
                 if (err) throw err;
                 console.log('The binary data has been decoded and saved ');
@@ -281,7 +331,7 @@ let encod = req.body.pdf[i].substring(28)      //28 pdf
         } else {
 
             
-            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.pdf', buff, (err) => {
+            fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.pdf', buff, (err) => {
          
                 if (err) throw err;
                 console.log('The binary data has been decoded and saved ');
@@ -326,7 +376,7 @@ coursExistant.post('/uploads/video/:fil/:module/:intitule',function(req, res) {
               fs.mkdirSync(distinationModule);
               'Cours/'+req.params.fil+'/'+req.params.module
            
-              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.mp4', buff, (err) => {
            
                   if (err) throw err;
                   console.log('The binary data has been decoded and saved');
@@ -335,7 +385,7 @@ coursExistant.post('/uploads/video/:fil/:module/:intitule',function(req, res) {
               fs.mkdirSync(distinationModule);
   
               
-              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.mp4', buff, (err) => {
            
                   if (err) throw err;
                   console.log('The binary data has been decoded and saved ');
@@ -346,7 +396,7 @@ coursExistant.post('/uploads/video/:fil/:module/:intitule',function(req, res) {
           } else {
   
               
-              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+i+'.mp4', buff, (err) => {
+              fs.writeFile('./Cours/'+req.params.fil+'/'+req.params.module+'/'+req.params.intitule+'-chap'+i+'.mp4', buff, (err) => {
            
                   if (err) throw err;
                   console.log('The binary data has been decoded and saved ');

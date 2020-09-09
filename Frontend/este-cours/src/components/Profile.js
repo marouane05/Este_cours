@@ -29,7 +29,7 @@ class Profile extends Component {
         users["username"]= res.data["username"]
         users["email"]= res.data["email"]
         users["type"]= res.data["type"]
-        
+        localStorage.setItem('type',res.data["type"])
        console.log('type '+ res.data["type"]) 
 
         if(res.data["type"]=="etudiant"){
@@ -40,6 +40,7 @@ class Profile extends Component {
           users["prenom"] = res.data["prenom"]
           users["naissance"] = res.data["naissance"].substring(0,10)
           users["cne"] = res.data["cne"]
+          localStorage.setItem('filiere',res.data["FiliereId"])
           localStorage.setItem('identification',users["IdPersonal"])
           localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
       
@@ -54,7 +55,8 @@ class Profile extends Component {
       users["nom"] = res.data["nom"]
           users["prenom"] = res.data["prenom"]
           users["naissance"] = res.data["naissance"].substring(0,10)
-      localStorage.setItem('identification',users["IdPersonal"])
+      
+          localStorage.setItem('identification',users["IdPersonal"])
           localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
       this.setState({  users });
   })

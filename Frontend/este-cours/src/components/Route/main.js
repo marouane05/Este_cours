@@ -18,6 +18,7 @@ import AddModule from '../Module/AddModule';
 import ShowModules from '../Module/ShowModules';
 import ProfesseurLive from '../Professeurs/ProfesseurLive';
 import AddCoursTest from '../Cours/AddCoursTest'
+import ShowCours from '../Cours/ShowCours'
 // il est essentielle de préciser le role dans chaque route
 const Main = () => ( 
         
@@ -26,6 +27,7 @@ const Main = () => (
           <Route exact path="/login" component={Login} />
           <Route exact path="/cours/add" component={AddCours} />
           <Route exact path="/cours/test" component={AddCoursTest} />
+          <Route exact path="/cours/show" component={ShowCours} />
           <PrivateRoute restricted={true} exact path="/profile" component={Profile} roles={['etudiant','professeur']}/>
          
           <PrivateRoute restricted={true}  exact path="/etudiant/add" component={AddEtudiant} roles={['etudiant','professeur']} />
