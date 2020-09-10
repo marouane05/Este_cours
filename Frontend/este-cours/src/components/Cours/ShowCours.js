@@ -8,6 +8,18 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import DraftsIcon from '@material-ui/icons/Drafts';
+import SendIcon from '@material-ui/icons/Send';
+import CustomizedMenus from './test'
+
 import pdfIcon from '../../icons/pdfIcon.png'
 export default class ShowCours extends Component {
 
@@ -15,6 +27,10 @@ constructor(){
     super();
     this.state={
         cours : [],
+        anchorEl: null,
+        redirect   : null ,
+        int : '',
+        url:'',
     }
 }
 
@@ -35,6 +51,21 @@ console.log("oui")
         console.log("non")
     }
 }
+
+handleClick = (intitule,urll,event) => {
+  this.setState({ anchorEl: event.currentTarget ,
+    int : intitule,
+    url : urll });
+};
+
+handleClose = () => {
+  this.setState({ anchorEl: null });
+};
+
+
+
+
+
 useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
@@ -51,8 +82,52 @@ useStyles = makeStyles((theme) => ({
       color: 'rgba(255, 255, 255, 0.54)',
     },
   }));
+
+
+
+
+
+
+
+
     render() {
         const classes = this.useStyles;
+        const { anchorEl } = this.state;
+// design button 
+
+
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    '&:focus': {
+      backgroundColor: theme.palette.primary.main,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white,
+      },
+    },
+  },
+}))(MenuItem);
+
+
 
         return (
          
@@ -78,6 +153,7 @@ useStyles = makeStyles((theme) => ({
           <ListSubheader component="div">December</ListSubheader>
         </GridListTile>       
         {this.state.cours.map((cour)=>
+        
           < GridListTile key={cour.id}>
            <img src={pdfIcon} alt={cour.intitule} />
            <GridListTileBar
@@ -85,7 +161,34 @@ useStyles = makeStyles((theme) => ({
              subtitle={<span>Publié le : {cour.updatedAt}</span>}
              actionIcon={
                <IconButton aria-label={`info about ${cour.intitule}`} className={classes.icon}>
-                 <InfoIcon />
+   
+   
+        <Button
+         aria-controls="customized-menu"
+         aria-haspopup="true"
+         variant="contained"
+         color="primary"
+        aria-owns={anchorEl ? 'simple-menu' : undefined}
+        aria-haspopup="true"
+          onClick={(event) => {
+            this.setState({ anchorEl: event.currentTarget ,
+              int : cour.intitule,
+              url : cour.url });
+          }}
+        
+        >
+          Open Menu
+        </Button>
+        <Menu
+      id="simple-menu"
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={this.handleClose}
+    >
+       {this.listMenu(this.state.int,this.state.url)}
+       </Menu>
+
+
                </IconButton>
              }
            />
@@ -99,4 +202,14 @@ useStyles = makeStyles((theme) => ({
 
         )
     }
+
+    listMenu(int,urll){
+    return <div>
+      <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll})}>Profile</MenuItem>
+      <MenuItem>{int}</MenuItem>
+      <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+      </div>
+    }
 }
+
+

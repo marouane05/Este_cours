@@ -4,15 +4,25 @@ import '../../styles/PdfView.css'
 import PDFViewer from 'pdf-viewer-reactjs'
 import CustomNavigation from './NavigationPdf'
 import 'pdf-viewer-reactjs-bulma-wrapped/css/main.css'
+import { useLocation } from "react-router-dom";
 
 //import { MobilePDFReader } from 'react-pdf-viewer';
-export default class AddCoursTest extends Component {
+export default class ShowDocumentCours extends Component {
+constructor(props){
+    super(props);
+}
 
-   
+componentDidMount(){
+    console.log('loc'+this.props.location.state.url)
+}
+
   render() {
-
+    
     const WithCustomNavigationStyles = () => (
       <div className='col-sm-12 text-center'>
+
+
+
           <h1 className='text-white bg-info rounded'>Custom css classes</h1>
           <div className='border rounded'>
               <PDFViewer
@@ -41,35 +51,26 @@ export default class AddCoursTest extends Component {
   )
   
     return (
-   /*   <div className='player-wrapper'>
-       <ReactPlayer
-        className='react-player'
-       url='/karamifahd/Langage%20C/Initiation%20Algo.mp4'
-       width='100%'
-          height='100%' />
-      </div>
+   /*   
 */
-
+/*
 <div className='container ' >
 <div className="row justify-content-center">
         <div className="col-md-14">
                 <div className="card ">
-
+*/
 <div className='col-sm-12 text-center'>
-        <h1 className='text-white bg-info rounded'>Cours Algorithmique</h1>
+    <h1 className='text-white bg-info rounded'>{this.props.location.state.intitule}</h1>
         <div className='border rounded'>
             <PDFViewer
                 document={{
-                    url: '/karamifahd/Langage%20C/algo1.pdf',
+                    url: '/'+this.props.location.state.url,
                 }}
                 showThumbnail={{ scale: 3 }}
             />
         </div>
     </div>
-</div>
-</div>
-</div>
-</div>
+
 
 
      
