@@ -1,10 +1,9 @@
 
 
 module.exports = (sequelize, Sequelize) => {
-  
-    const Commentaire = sequelize.define("commentaire", {
-     Commentaire : {
-        type: Sequelize.TEXT , 
+    const Annonce = sequelize.define("annonce", {
+     contenu : {
+        type: Sequelize.STRING , 
         required: true
       },
     
@@ -15,5 +14,5 @@ module.exports = (sequelize, Sequelize) => {
     freezeTableName: true
 });
   
-    return Commentaire;
+    return Annonce;
   };

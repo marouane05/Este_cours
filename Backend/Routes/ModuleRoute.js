@@ -113,6 +113,25 @@ moduleUniversitaire.get('/All' , (req , res) => {
 
 // Get module 
 
+moduleUniversitaire.get('/byFiliere/:filiereId' , (req , res) => {
+    Module.findAll({
+     where :{ FiliereId : req.params.filiereId}  
+            })    .then(module =>{
+                if(module){
+                    res.send(module)
+                }else {
+                    res.send('Aucun module')
+                }
+            }).catch(err =>{
+                res.send('error' + err)
+            }) 
+
+});
+
+
+
+
+
 moduleUniversitaire.get('/:moduleId' , (req, res) =>{
 
     Module.findOne({

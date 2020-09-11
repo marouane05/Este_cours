@@ -26,11 +26,11 @@ db.professeur = require("./ProfesseurModel")(sequelize,Sequelize);
 db.admin = require("./AdminModel")(sequelize,Sequelize);
 db.module = require("./ModuleModel")(sequelize,Sequelize);
 db.filiere = require("./FiliereModel")(sequelize,Sequelize);
-db.cours = require("./CoursModel")(sequelize,Sequelize);
+db.annonce = require("./AnnonceModel")(sequelize,Sequelize);
 db.coursExistant = require("./CoursExistantModel")(sequelize,Sequelize);
 db.commentaire = require("./CommentaireModel")(sequelize,Sequelize);
 db.vue = require("./VueModel")(sequelize,Sequelize);
-
+db.repcommentaire = require("./RepcommentaireModel")(sequelize,Sequelize);
 // définition des associations 
 db.professeur.hasMany(db.module,{as:'module'})
 db.user.hasMany(db.etudiant,{as:'etudiant'})
@@ -38,12 +38,18 @@ db.user.hasMany(db.professeur,{as:'professeur'})
 //db.filiere.hasMany(db.professeur,{as:'professeur'});
 db.filiere.hasMany(db.etudiant,{as:'etudiant'});
 db.filiere.hasMany(db.module,{as:'module'});
-db.professeur.hasMany(db.cours,{as: 'cours'});
-db.coursExistant.hasMany(db.cours,{as:'cours'});
+
+
+db.professeur.hasMany(db.annonce,{as: 'annonce'});
+db.module.hasMany(db.annonce,{as: 'annonce'});
+
+db.professeur.hasMany(db.repcommentaire,{as: 'repcommantaire'});
+db.commentaire.hasMany(db.repcommentaire,{as: 'repcommantaire'});
+
 db.etudiant.hasMany(db.commentaire,{as:'commentaire'})
-db.cours.hasMany(db.commentaire,{as:'commentaire'})
+db.coursExistant.hasMany(db.commentaire,{as:'commentaire'})
 db.etudiant.hasMany(db.vue,{as:'vue'})
-db.cours.hasMany(db.vue,{as:'vue'})
+db.coursExistant.hasMany(db.vue,{as:'vue'})
 
 db.filiere.hasMany(db.coursExistant,{as:'coursExistant'});
 db.professeur.hasMany(db.coursExistant,{as: 'coursExistant'});

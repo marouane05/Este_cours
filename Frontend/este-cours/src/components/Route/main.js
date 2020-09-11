@@ -21,6 +21,7 @@ import ShowDocumentCours from '../Cours/ShowDocumentCours'
 import ShowVideoCours from '../Cours/ShowVideoCours'
 import ShowCours from '../Cours/ShowCours'
 import Test from '../Cours/test'
+import ShowCoursToStudent from '../Cours/ShowCoursToStudent'
 // il est essentielle de préciser le role dans chaque route
 const Main = () => ( 
         
@@ -30,6 +31,7 @@ const Main = () => (
           <Route exact path="/cours/add" component={AddCours} />
           <Route exact path="/cours/test" component={ShowDocumentCours} />
           <Route exact path="/cours/show" component={ShowCours} />
+          <Route exact path="/cours/student" component={ShowCoursToStudent} />
           <Route exact path="/test" component={Test}/>
           <Route exact path="/cours/show/video" component={ShowVideoCours}/>
 

@@ -1,8 +1,8 @@
 
 
 module.exports = (sequelize, Sequelize) => {
-    const Cours = sequelize.define("cours", {
-     intitule : {
+    const Repcommentaire = sequelize.define("repcommentaire", {
+     commentaire : {
         type: Sequelize.STRING , 
         required: true
       },
@@ -14,5 +14,5 @@ module.exports = (sequelize, Sequelize) => {
     freezeTableName: true
 });
   
-    return Cours;
+    return Repcommentaire;
   };

@@ -50,7 +50,7 @@ commentaire.post('/add' , (req , res ) => {
     const commentaireData = {
        Commentaire : req.body.commentaire , 
        etudiantId:parseInt(req.body.etudiant),
-       courId : parseInt(req.body.courId),
+       coursExistantId : parseInt(req.body.courId),
        createdAt: new Date(),
        updatedAt: new Date()
     }

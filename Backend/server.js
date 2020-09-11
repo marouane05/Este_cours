@@ -15,8 +15,8 @@ const session = require('express-session')
 db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
 });
-
 */
+
 
 
 /*
@@ -72,6 +72,8 @@ app.use('/module',Module)
 var CoursExistant = require('./Routes/CoursExistantRoute')
 app.use('/cours',CoursExistant)
 
+var Commentaire = require('./Routes/CommentaireRoute')
+app.use('/commentaire',Commentaire)
 
 app.listen(4000, () => {
   console.log('Example app listening on port 4000!')
