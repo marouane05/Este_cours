@@ -6,7 +6,7 @@ var mysql = require('mysql');
 var http = require('http');
 var path = require('path');
 var jwt = require('jsonwebtoken');
-var multer = require('multer');
+//var multer = require('multer');
 var fs = require('fs');
 const { request } = require('express');
 const db = require("../Models");
@@ -20,7 +20,8 @@ const Op = db.Sequelize.Op;
 coursExistant.use(cors());
 process.env.SECRET_KEY = 'secret'
 
-// pour stocker les fichiers
+/*
+// pour stocker les fichiers vc multer
 var storage = multer.diskStorage({
    
     destination: function (req, file, cb) {
@@ -65,6 +66,7 @@ var storage = multer.diskStorage({
   var upload = multer({ storage: storage  ,limits: { fileSize: 5242880 }}).array('file')
 // fin fichier
   
+*/
 
 
 const authenticateJWT = (req, res, next) => {
@@ -130,19 +132,25 @@ for(let i=0 ; i< req.body.nombre ; i++){
 
 // update coursExistant 
 
-coursExistant.put('/:coursExistantId' , (req, res) =>{
+coursExistant.put('' , (req, res) =>{
+const FormRecu ={
+    id : req.body.id,
+    intitule : req.body.intitule,
+    description : req.body.description
+}
 
+    console.log("form"+FormRecu.id)
     CoursExistant.findOne({
-        where : {id : req.params.coursExistantId},
+        where : {id : FormRecu.id},
             })    .then(coursExistant =>{
                 if(coursExistant){
-                    CoursExistant.update({
-                        where : {id : req.params.coursExistantId},
-                        intitule : req.body.intitule,
-                      
+                    coursExistant.update({
+                        where : {id : FormRecu.id},
+                        intitule : FormRecu.intitule,
+                        description : FormRecu.description
                       }
                       )
-                      res.send('Cours '+coursExistant.nom +' '+coursExistant.prenom+' est bien modifier')
+                      res.send('Cours '+coursExistant.intitule +'est bien modifier')
                 }else {
                     res.send('Eutdiant does not exists')
                 }
@@ -156,16 +164,29 @@ coursExistant.put('/:coursExistantId' , (req, res) =>{
 
 
 // delete coursExistant
-coursExistant.delete('/:coursExistantId' , (req , res) => {
-   
+coursExistant.delete('' , (req , res) => {
+    const CourRecu = {
+        id : req.body.courId,
+        url : req.body.url
+    }
+    console.log('id recu '+CourRecu.id)
     CoursExistant.findOne({
-        where : {id : req.params.coursExistantId},
+        where : {id : CourRecu.id},
             })    .then(coursExistant =>{
                 if(coursExistant){
                     coursExistant.destroy({
-                        where : {id : req.params.coursExistantId},
+                        where : {id :  CourRecu.id},
                        
                       })
+
+                      try {
+                        fs.unlinkSync('./Cours/'+CourRecu.url);
+                        console.log('successfully deleted ');
+                      } catch (err) {
+                        // handle the error
+                      }
+
+
                       res.send('Cours a été supprimé')
                 }else {
                     res.send('Aucun cours correspond ces informations')
