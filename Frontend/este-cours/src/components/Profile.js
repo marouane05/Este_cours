@@ -43,7 +43,7 @@ class Profile extends Component {
           localStorage.setItem('filiere',res.data["FiliereId"])
           localStorage.setItem('identification',users["IdPersonal"])
           localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
-      
+          localStorage.setItem('autheur',users["nom"]+' '+users["prenom"])
        this.setState({  users });
         })
                                       }
@@ -55,7 +55,7 @@ class Profile extends Component {
       users["nom"] = res.data["nom"]
           users["prenom"] = res.data["prenom"]
           users["naissance"] = res.data["naissance"].substring(0,10)
-      
+          localStorage.setItem('autheur',users["nom"]+' '+users["prenom"])
           localStorage.setItem('identification',users["IdPersonal"])
           localStorage.setItem('nom',''+users["nom"]+''+users["prenom"])
       this.setState({  users });

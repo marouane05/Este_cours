@@ -261,16 +261,16 @@ const StyledMenuItem = withStyles((theme) => ({
         )
     }
 
-    listMenu(id,int,urll,type){
+    listMenu(id,int,urll,type,descr){
       if(type=="document"){
     return <div>
-      <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll,id :id})}>ouvrir</MenuItem>
+      <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll,id :id,description : descr})}>ouvrir</MenuItem>
       
       </div> }
       else
       {
         return <div>
-        <MenuItem onClick={()=>this.props.history.push('/cours/show/video',{intitule:int,url : urll,id : id})}>ouvrir</MenuItem>
+        <MenuItem onClick={()=>this.props.history.push('/cours/show/video',{intitule:int,url : urll,id : id,description : descr})}>ouvrir</MenuItem>
         
         </div>
       }

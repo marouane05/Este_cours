@@ -74,7 +74,8 @@ app.use('/cours',CoursExistant)
 
 var Commentaire = require('./Routes/CommentaireRoute')
 app.use('/commentaire',Commentaire)
-
+var Repcommentaire = require('./Routes/RepCommentaireRoute')
+app.use('/repcommentaire',Repcommentaire)
 app.listen(4000, () => {
   console.log('Example app listening on port 4000!')
 });

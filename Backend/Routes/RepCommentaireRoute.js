@@ -1,6 +1,6 @@
 var express = require('express');
 var cors = require('cors');
-const commentaire = express.Router()
+const repcommentaire = express.Router()
 var bcryptjs = require('bcryptjs');
 var mysql = require('mysql');
 var http = require('http');
@@ -10,12 +10,12 @@ var jwt = require('jsonwebtoken');
 const { request } = require('express');
 const db = require("../Models");
 const session = require('express-session');
-const Commentaire = db.commentaire;
+const Repcommentaire = db.repcommentaire;
 const Filiere = db.filiere ; 
 const Op = db.Sequelize.Op;
 
 
-commentaire.use(cors());
+repcommentaire.use(cors());
 process.env.SECRET_KEY = 'secret'
 
 
@@ -44,21 +44,21 @@ const authenticateJWT = (req, res, next) => {
 
 
 // create commentaire 
-commentaire.post('/add' , (req , res ) => {
+repcommentaire.post('/add' , (req , res ) => {
 
 
-    const commentaireData = {
-       Commentaire : req.body.commentaire , 
-       etudiantId:parseInt(req.body.etudiant),
-       coursExistantId : parseInt(req.body.courId),
+    const repcommentaireData = {
+       commentaire : req.body.repcommentaire , 
+      professeurId : parseInt(req.body.professeur) , 
+      commentaireId : parseInt(req.body.commentaireId),
        autheur : req.body.autheur ,
        createdAt: new Date(),
        updatedAt: new Date()
     }
     
 
- Commentaire.create(commentaireData) .then(comment => {
-    res.json({status : comment.Commentaire + ' registred !'})
+ Repcommentaire.create(repcommentaireData) .then(repcomment => {
+    res.json({status : 'registred !'})
 })
 .catch(err => {
     res.send('error' + err)
@@ -69,23 +69,23 @@ commentaire.post('/add' , (req , res ) => {
 
 // update commentaire 
 
-commentaire.put('' , (req, res) =>{
+repcommentaire.put('' , (req, res) =>{
 
-    Commentaire.findOne({
+    Repcommentaire.findOne({
         where : {id :req.body.id },
-            })    .then(commentaire =>{
-                if(commentaire){
-                    commentaire.update({
+            })    .then(repcommentaire =>{
+                if(repcommentaire){
+                    repcommentaire.update({
                         where : {id : req.body.id},
                      
-                        Commentaire : req.body.Commentaire
+                        commentaire : req.body.Repcommentaire
                         
                       
                       }
                       )
-                      res.send('Commentaire est bien modifier')
+                      res.send('Repcommentaire est bien modifier')
                 }else {
-                    res.send('Commentaire n existe pas')
+                    res.send('Repcommentaire n existe pas')
                 }
             }).catch(err =>{
                 res.send('error' + err)
@@ -98,9 +98,9 @@ commentaire.put('' , (req, res) =>{
 
 
 // delete commentaire
-commentaire.delete('/:commentaireId' , (req , res) => {
+repcommentaire.delete('/:commentaireId' , (req , res) => {
    
-    Commentaire.findOne({
+    Repcommentaire.findOne({
         where : {id : req.params.commentaireId},
             })    .then(commentaire =>{
                 if(commentaire){
@@ -108,9 +108,9 @@ commentaire.delete('/:commentaireId' , (req , res) => {
                         where : {id : req.params.commentaireId},
                        
                       })
-                      res.send('Commentaire a été supprimé')
+                      res.send('Repcommentaire a été supprimé')
                 }else {
-                    res.send('Aucun Commentaire correspond ces informations')
+                    res.send('Aucun Repcommentaire correspond ces informations')
                 }
             }).catch(err =>{
                 res.send('error' + err)
@@ -119,11 +119,11 @@ commentaire.delete('/:commentaireId' , (req , res) => {
 
 // Get All commentaire 
 
-commentaire.get('/All/:courId' ,(req , res) => {
+repcommentaire.get('/All/:commentaireId' ,(req , res) => {
   //  jwt.verify(req.body.token,session.SECRET_KEY)
   
-    Commentaire.findAll({
-        where : {coursExistantId : req.params.courId},
+    Repcommentaire.findAll({
+        where : {commentaireId : req.params.commentaireId},
             },
             
               )    .then(commentaire =>{
@@ -135,7 +135,7 @@ commentaire.get('/All/:courId' ,(req , res) => {
                         {},
                         {
                             id : comment.id,
-                            Commentaire : comment.Commentaire,
+                            Repcommentaire : comment.Repcommentaire,
                             createdAt : comment.createdAt,
                             updatedAt : comment.updatedAt,
                             etudiant : comment.etudiant.map(
@@ -165,16 +165,16 @@ commentaire.get('/All/:courId' ,(req , res) => {
                                 {},
                                 {
                                     id : comment.id,
-                                    Commentaire : comment.Commentaire,
+                                    commentaireId : comment.commentaireId,
                                     autheur : comment.autheur,
-                                    etudiantId : comment.etudiantId,
+                                    professeurId : comment.professeurId,
                                     createdAt : (comment.createdAt).toGMTString() ,
                                     updatedAt : (comment.updatedAt).toGMTString(),}
                             )})
 
                    res.send(resObj)
                 }else {
-                    res.send('Eutdiant does not exists')
+                    res.send('Commentaire does not exists')
                 }
             }).catch(err =>{
                 res.send('error' + err)
@@ -183,35 +183,21 @@ commentaire.get('/All/:courId' ,(req , res) => {
 
 });
 
-// Get Commentaire 
+// Get Repcommentaire 
 
-commentaire.get('/:commentaireId' , (req, res) =>{
+repcommentaire.get('/:commentaireId' , (req, res) =>{
 
-    Commentaire.findOne({
+    Repcommentaire.findOne({
 where : {id : req.params.commentaireId},
     })    .then(commentaire =>{
         if(commentaire){
            res.send(commentaire)
         }else {
-            res.send('Commentaire does not exists')
-        }
-    }).catch(err =>{
-        res.send('error' + err)
-    }) 
-});
-commentaire.get('/detail/:userId' , (req, res) =>{
-
-    Commentaire.findOne({
-where : {id : req.params.userId},
-    })    .then(commentaire =>{
-        if(commentaire){
-           res.send(commentaire)
-        }else {
-            res.send('Commentaire does not exists')
+            res.send('Repcommentaire does not exists')
         }
     }).catch(err =>{
         res.send('error' + err)
     }) 
 });
 
-module.exports = commentaire ;
+module.exports = repcommentaire ;

@@ -22,6 +22,7 @@ import ShowVideoCours from '../Cours/ShowVideoCours'
 import ShowCours from '../Cours/ShowCours'
 import Test from '../Cours/test'
 import ShowCoursToStudent from '../Cours/ShowCoursToStudent'
+import ShowVideoCoursToStudent from '../Cours/ShowVideoCoursToStudent'
 // il est essentielle de préciser le role dans chaque route
 const Main = () => ( 
         
@@ -30,11 +31,11 @@ const Main = () => (
           <Route exact path="/login" component={Login} />
           <Route exact path="/cours/add" component={AddCours} />
           <Route exact path="/cours/test" component={ShowDocumentCours} />
-          <Route exact path="/cours/show" component={ShowCours} />
-          <Route exact path="/cours/student" component={ShowCoursToStudent} />
+          <PrivateRoute exact path="/cours/show" component={ShowCours} roles={['professeur']}/>
+          <PrivateRoute exact path="/cours/student" component={ShowCoursToStudent} roles={['etudiant']} />
           <Route exact path="/test" component={Test}/>
-          <Route exact path="/cours/show/video" component={ShowVideoCours}/>
-
+          <PrivateRoute exact path="/cours/show/MyVideos" component={ShowVideoCours} roles={['professeur']}/>
+          <PrivateRoute exact path="/cours/show/video" component={ShowVideoCoursToStudent} roles={['etudiant']}/>
           <PrivateRoute restricted={true} exact path="/profile" component={Profile} roles={['etudiant','professeur']}/>
          
           <PrivateRoute restricted={true}  exact path="/etudiant/add" component={AddEtudiant} roles={['etudiant','professeur']} />

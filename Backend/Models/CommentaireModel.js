@@ -8,6 +8,12 @@ module.exports = (sequelize, Sequelize) => {
         required: true
       },
     
+    autheur : {
+
+      type : Sequelize.STRING ,
+      required : true 
+
+    }  
      
     /*  createdAt: new Date(),
       updatedAt: new Date()

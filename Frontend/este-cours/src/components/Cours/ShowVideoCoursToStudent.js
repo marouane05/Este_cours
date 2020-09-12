@@ -9,94 +9,48 @@ import axios from 'axios';
 import iconEdit from '../../icons/iconEdit.png'
 import confirm, { Button as ButtonAlert, alert } from "react-alert-confirm";
 
-export default class ShowVideoCours extends Component {
+export default class ShowVideoCoursToStudent extends Component {
 
 constructor(){
     super();
     this.state={
         commentaire :'' ,
         commentaires : [],
-        commentaireEtudiant : [],
         commentUpdated :'',
     }
     this.handleChange = this.handleChange.bind(this)
 }
 
 
-EnvoyerRepCommentaire=(id)=>{
-
- 
-confirm({
-  title: "Modifier votre commentaire",
-  content: (
-    <Fragment>
-      <Form reply>
-      <Form.TextArea 
-      name="commentaire"
-     // value={this.state.commentaire}
-      onChange={(e)=>{
-        this.setState({
-          commentaire : e.target.value
-        })
-      }}/>
-     
-    </Form>
-
-    </Fragment>
-  ),
-  lang: "en",
-  onOk: () => {
-    
-    const Form = {
-      professeur : localStorage.identification,
-      repcommentaire : this.state.commentaire ,
-      courId : this.props.location.state.id,
-      autheur : localStorage.autheur , 
-      commentaireId : id ,
-  }
-  axios.post('/repcommentaire/add',Form,{}).
-  then(res=>{
-      console.log(res);
-      this.setState({
-          commentaire : ''
-      })
-  this.UpdateCommentaires()
-   } )
-      .catch((err)=>   
-      console.log(err))
-  
-
-
-  },
-  onCancel: () => {
-    console.log("cancel");
-  }
-});
-
-
-
+EnvoyerCommentaire=()=>{
+const Form = {
+    etudiant : localStorage.identification,
+    commentaire : this.state.commentaire ,
+    courId : this.props.location.state.id,
+    autheur : localStorage.autheur , 
+}
+axios.post('/commentaire/add',Form,{}).
+then(res=>{
+    console.log(res);
+    this.setState({
+        commentaire : ''
+    })
+this.UpdateCommentaires()
+ } )
+    .catch((err)=>   
+    console.log(err))
 
 }
 
 UpdateCommentaires=()=>{
 
-  axios.get(`/repcommentaire/All/${this.props.location.state.id}`)
+  axios.get(`/commentaire/All/${this.props.location.state.id}`)
   .then(res => {
     const commentaires = res.data;
     this.setState({ commentaires });
   })
 
-  axios.get(`/commentaire/All/${this.props.location.state.id}`)
-  .then(res => {
-    const commentaireEtudiant = res.data;
-    this.setState({ commentaireEtudiant });
-  })
-
 }
-
-
-
-
 
 
 updateMonCommentaire=(id,com)=>{
@@ -130,10 +84,10 @@ updateMonCommentaire=(id,com)=>{
     onOk: () => {
       const Form ={
         id: id,
-       commentaire : this.state.commentUpdated
+       Commentaire : this.state.commentUpdated
       }
       
-axios.put(`/repcommentaire/`,Form,{}).then(res=>{
+axios.put(`/commentaire/`,Form,{}).then(res=>{
   console.log(res);
   console.log(res.data);
  this.UpdateCommentaires();
@@ -171,7 +125,7 @@ deleteCommentaire =(id)=>{
       closeBefore: (action, close) => {
         if (action === "ok") {
   
-          axios.delete(`/repcommentaire/${id}`)
+          axios.delete(`/commentaire/${id}`)
     .then(res => {
         console.log(res);
         console.log(res.data);
@@ -254,38 +208,69 @@ src={'/'+this.props.location.state.url}
     <Header as='h3' dividing>
       Commentaires
     </Header>
-
-{this.state.commentaireEtudiant.map((com)=>   
+{this.state.commentaires.map((comment)=>
     <Comment>
-     <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
       <Comment.Content>
-        <Comment.Author as='a'>{com.autheur}</Comment.Author>
+        <Comment.Author as='a'>{comment.autheur}</Comment.Author>
         <Comment.Metadata>
-<div>{com.createdAt}</div>
+<div>{comment.createdAt}</div>
 
         </Comment.Metadata>
-        <Comment.Text>{com.Commentaire}</Comment.Text>
+        <Comment.Text>{comment.Commentaire}</Comment.Text>
         
-          
+          { localStorage.identification == comment.etudiantId ?
           <Comment.Actions>
-          <Comment.Action onClick={()=>this.EnvoyerRepCommentaire(com.id)} >Répondre</Comment.Action>
+          <Comment.Action onClick={()=>this.updateMonCommentaire(comment.id,comment.Commentaire)}>Modifier</Comment.Action>
+          <Comment.Action
+          onClick={()=>this.deleteCommentaire(comment.id)}
+          >Supprimer</Comment.Action>
           </Comment.Actions>
-         <Comment.Actions></Comment.Actions>  
-
-
+  :<Comment.Actions></Comment.Actions>  }
+         
       </Comment.Content>
-
-
-      <Comment.Group>  
-        
-        {this.ReponseComment(com.id)}
-
-         </Comment.Group>
-     
     </Comment>
 )}
+    <Comment>
+      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
+      <Comment.Content>
+        <Comment.Author as='a'>Elliot Fu</Comment.Author>
+        <Comment.Metadata>
+          <div>Yesterday at 12:30AM       <img src={iconEdit}/></div>
+        </Comment.Metadata>
+        <Comment.Text>
+          <p>This has been very useful for my research. Thanks as well!</p>
+        </Comment.Text>
+        <Comment.Actions>
+          <Comment.Action>Reply</Comment.Action>
+        </Comment.Actions>
+      </Comment.Content>
+      <Comment.Group>
+        <Comment>
+          <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
+          <Comment.Content>
+            <Comment.Author as='a'>Jenny Hess</Comment.Author>
+            <Comment.Metadata>
+              <div>Just now</div>
+            </Comment.Metadata>
+            <Comment.Text>Elliot you are always so right :)</Comment.Text>
+            <Comment.Actions>
+              <Comment.Action>Reply</Comment.Action>
+            </Comment.Actions>
+          </Comment.Content>
+        </Comment>
+        
+      </Comment.Group>
+    </Comment>
+
     
-    
+    <Form onSubmit={this.EnvoyerCommentaire} reply>
+      <Form.TextArea 
+      name="commentaire"
+      value={this.state.commentaire}
+      onChange={this.handleChange}/>
+      <Button type="submit"  content='Commenter' width={100}  icon='edit' primary />
+    </Form>
   </Comment.Group>
   </Card.Body>
 </Card>
@@ -294,38 +279,6 @@ src={'/'+this.props.location.state.url}
 </div>
         )
     }
-
-ReponseComment=(id)=>{
-
-  {this.state.commentaires.map((comment)=>
-    id == comment.commmentaireId  ?
-    <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-      <Comment.Content>
-        <Comment.Author as='a'>{comment.autheur}</Comment.Author>
-        <Comment.Metadata>
-      <div>{comment.createdAt}</div>
-
-        </Comment.Metadata>
-        <Comment.Text>{comment.commentaire}</Comment.Text>
-        
-        
-          <Comment.Actions>
-          <Comment.Action onClick={()=>this.updateMonCommentaire(comment.id,comment.commentaire)}>Modifier</Comment.Action>
-          <Comment.Action
-          onClick={()=>this.deleteCommentaire(comment.id)}
-          >Supprimer</Comment.Action>
-          </Comment.Actions>
-      </Comment.Content>
-
-     
-
-    </Comment> : <Comment></Comment>
-)}
-
-}    
-
-
 }
 
 

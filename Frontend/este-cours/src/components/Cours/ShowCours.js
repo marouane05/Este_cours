@@ -44,21 +44,14 @@ constructor(){
 }
 
 UpdateComponent(){
-  if(localStorage.type =="professeur")
-  {
+  
 const professeurId = localStorage.identification
       axios.get(`/cours/prof/${professeurId}`)
       .then(res => {
         const cours = res.data;
         this.setState({ cours });
       })
-console.log("oui")
 
-  }
-  else if(localStorage.type=="etudiant")
-  {
-      console.log("non")
-  }
 }
 componentDidMount(){
     
@@ -303,6 +296,7 @@ const StyledMenuItem = withStyles((theme) => ({
       onClose={this.handleClose}
     >
        {this.listMenu(this.state.id,this.state.int,this.state.url,this.state.typeCours,this.state.description)}
+       
        </Menu>
 
 
@@ -320,17 +314,17 @@ const StyledMenuItem = withStyles((theme) => ({
         )
     }
 
-    listMenu(id,int,urll,type){
+    listMenu(id,int,urll,type,descr){
       if(type=="document"){
     return <div>
-      <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll})}>ouvrir</MenuItem>
+      <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll,id : id,description : descr})}>ouvrir</MenuItem>
       <MenuItem onClick={()=>this.updateCours(id)}>modifier</MenuItem>
       <MenuItem onClick={()=>this.deleteCours(id,urll,int)}>supprimer</MenuItem>
       </div> }
       else
       {
         return <div>
-        <MenuItem onClick={()=>this.props.history.push('/cours/show/video',{intitule:int,url : urll})}>ouvrir</MenuItem>
+        <MenuItem onClick={()=>this.props.history.push('/cours/show/MyVideos',{intitule:int,url : urll,id : id,description : descr})}>ouvrir</MenuItem>
         <MenuItem onClick={()=>this.updateCours(id)}>modifier</MenuItem>
         <MenuItem onClick={()=>this.deleteCours(id,urll,int)}>supprimer</MenuItem>
         </div>
