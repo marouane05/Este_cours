@@ -234,11 +234,12 @@ where : {id : req.params.coursExistantId},
 });
 
 
-coursExistant.get('/prof/:professeurId' , (req, res) =>{
+coursExistant.get('/prof/:professeurId/:moduleId' , (req, res) =>{
 
 
     CoursExistant.findAll({
-where : {professeurId : req.params.professeurId},
+where : {professeurId : req.params.professeurId,
+moduleId : req.params.moduleId},
     })    .then(coursExistant =>{
         if(coursExistant){
            res.send(coursExistant)

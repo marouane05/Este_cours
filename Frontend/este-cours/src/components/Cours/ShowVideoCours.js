@@ -83,6 +83,7 @@ UpdateCommentaires=()=>{
   axios.get(`/repcommentaire/All/${this.props.location.state.id}`)
   .then(res => {
     const commentaires = res.data;
+   
     this.setState({ commentaires });
   })
 
@@ -128,6 +129,7 @@ updateMonCommentaire=(id,com)=>{
     ),
     lang: "en",
     onOk: () => {
+      console.log('up'+this.state.commentUpdated)
       const Form ={
         id: id,
        commentaire : this.state.commentUpdated
@@ -221,6 +223,7 @@ handleChange = (e) =>{
         return (
             <div className="bar">
                 <br></br><br></br>
+       
                 <div className="row justify-content-center">
                 <div className="col-md-9">
                     <Card >
@@ -278,7 +281,39 @@ src={'/'+this.props.location.state.url}
 
       <Comment.Group>  
         
-        {this.ReponseComment(com.id)}
+        { /*
+      this.ReponseComment(com.id,this.state.commentaires)
+        */ }
+        
+
+        {this.state.commentaires.map((comment)=>
+   comment.commentaireId == com.id ?
+    <Comment>
+      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+      <Comment.Content>
+        <Comment.Author as='a'>{comment.autheur}</Comment.Author>
+        <Comment.Metadata>
+      <div>{comment.createdAt}</div>
+
+        </Comment.Metadata>
+        <Comment.Text>{comment.commentaire}</Comment.Text>
+        
+        
+          <Comment.Actions>
+          <Comment.Action onClick={()=>this.updateMonCommentaire(comment.id,comment.commentaire)}>Modifier</Comment.Action>
+          <Comment.Action
+          onClick={()=>this.deleteCommentaire(comment.id)}
+          >Supprimer</Comment.Action>
+          </Comment.Actions>
+      </Comment.Content>
+     
+     
+
+</Comment> 
+ : <Comment></Comment> 
+)
+        }
+
 
          </Comment.Group>
      
@@ -295,10 +330,10 @@ src={'/'+this.props.location.state.url}
         )
     }
 
-ReponseComment=(id)=>{
+ReponseComment=(id,commentaires)=>{
 
-  {this.state.commentaires.map((comment)=>
-    id == comment.commmentaireId  ?
+  commentaires.map((comment)=>
+   //  comment.commmentaireId == id ?
     <Comment>
       <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
       <Comment.Content>
@@ -320,8 +355,9 @@ ReponseComment=(id)=>{
 
      
 
-    </Comment> : <Comment></Comment>
-)}
+</Comment> 
+//: <Comment></Comment> 
+)
 
 }    
 

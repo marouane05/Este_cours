@@ -45,6 +45,7 @@ db.module.hasMany(db.annonce,{as: 'annonce'});
 
 db.professeur.hasMany(db.repcommentaire,{as: 'repcommantaire'});
 db.commentaire.hasMany(db.repcommentaire,{as: 'repcommantaire'});
+db.coursExistant.hasMany(db.repcommentaire,{as: 'repcommantaire'});
 
 db.etudiant.hasMany(db.commentaire,{as:'commentaire'})
 db.coursExistant.hasMany(db.commentaire,{as:'commentaire'})

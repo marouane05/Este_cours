@@ -162,8 +162,7 @@ handleChange = (e) =>{
 
 componentDidMount(){
 
-const id = localStorage.identification
-axios.get(`/module/All`).then(res=>{
+axios.get(`/module/mylist/${localStorage.identification}`).then(res=>{
 const modules = res.data 
 const options = res.data.map(d => ({
     "label" : d.intitule+ ' ( Semestre '+d.id_semestre +')',

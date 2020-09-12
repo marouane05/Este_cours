@@ -9,7 +9,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-
+import { Button as ButtonAnnonce, Comment, Form, Header } from 'semantic-ui-react'
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -25,6 +25,7 @@ import confirm, { Button as ButtonAlert, alert } from "react-alert-confirm";
 import pdfIcon from '../../icons/pdfIcon.png'
 import VideoIcon from '../../icons/VideoIcon.png'
 import { Input } from '@material-ui/core';
+import Select from 'react-select';
 export default class ShowCours extends Component {
 
 constructor(){
@@ -40,17 +41,35 @@ constructor(){
         typeCours:'',
         descriptionModifier:'',
         intituleModifier:'',
+        selectOptions : [],
+        modules : [],
+        ModuleCours:'', FiliereCours:'' , IntituleCours : '',
+        displayAnnonce : false ,
     }
 }
 
 UpdateComponent(){
+  axios.get(`/module/mylist/${localStorage.identification}`)
+  .then(res => {
+    const modules = res.data;
+   
+    const options = res.data.map(d => ({
+        "label" : d.intitule+ ' ( Semestre '+d.id_semestre +')',
+        "id" : d.id ,
+        "idF" : d.FiliereId ,
+        "intit" : d.intitule
+        
+      }))
+      this.setState({
+        selectOptions : options
+    })
+
+      this.setState({ modules });
+
+  })
+
   
-const professeurId = localStorage.identification
-      axios.get(`/cours/prof/${professeurId}`)
-      .then(res => {
-        const cours = res.data;
-        this.setState({ cours });
-      })
+
 
 }
 componentDidMount(){
@@ -67,6 +86,27 @@ handleClick = (intitule,urll,event) => {
 handleClose = () => {
   this.setState({ anchorEl: null });
 };
+
+publierAnnonce =()=>{
+  this.setState({
+    displayAnnonce : true 
+  })
+
+const Form ={
+  idModule : this.state.idModule ,
+  idProf : localStorage.identification,
+  contenu : this.state.contenu ,
+  autheur : localStorage.autheur
+}
+  axios.post('/annonce/',Form,{})
+  .then((res)=>{
+
+  }).catch((err)=>
+  console.log(err))
+
+
+}
+
 
 updateCours=(id)=>{
 
@@ -131,6 +171,22 @@ axios.put(`/cours`,Form,{}).then(res=>{
 
 
 }
+
+handleChange2=(e)=>{
+  this.setState({ModuleCours:e.id, FiliereCours:e.idF , IntituleCours : e.intit})
+  console.log(`Option selected:`,this.state.FiliereCours);
+
+      axios.get(`/cours/prof/${localStorage.identification}/${e.id}`)
+      .then(res => {
+        const cours = res.data;
+        this.setState({ cours });
+      })
+
+
+ }
+
+
+
 
 
 deleteCours =(courId,courUrl,courIntitule)=>{
@@ -240,11 +296,55 @@ const StyledMenuItem = withStyles((theme) => ({
          
            
        <div>  
-           <div className="container ">
+           <div className="container justify-content-center">
  
  
  <br></br>             
+ 
+ 
+ <Select
+      //  value={this.state.ModuleCours}
+        onChange={this.handleChange2.bind(this)}
+        options={this.state.selectOptions}
+    //    {...this.props}
+   
 
+      />
+
+      <br></br>
+
+
+{this.state.displayAnnonce == false ?
+ <Fragment>
+      <Form  onSubmit={this.publierAnnonce} reply>
+      <Form.TextArea 
+      name="commentaire"
+      placeholder="Ecrire une annonce aux étudiants"
+     // value={this.state.commentaire}
+      onChange={(e)=>{
+        this.setState({
+          commentaire : e.target.value
+        })
+      }}/>
+     <ButtonAnnonce type="submit"  content='Publier' width={100}  icon='edit' primary />
+    </Form>
+
+    </Fragment>
+
+
+:
+
+ <div class="notification is-warning justify-content-center">
+  <button class="delete" onClick={(e)=>this.setState({
+    displayAnnonce : false ,
+  })}></button>
+  <strong>Annonce </strong> <a>le (28-10-2020)</a><strong>:</strong>
+  <br></br> <br></br>
+  Primar lorem ipsum dolor sit amet, consectetur
+  adipiscing elit lorem ipsum dolor, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Sit amet,
+  consectetur adipiscing elit
+</div>
+    }
 
 <br></br>  
     <div class="row justify-content-center">

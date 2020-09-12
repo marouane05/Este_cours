@@ -49,8 +49,9 @@ repcommentaire.post('/add' , (req , res ) => {
 
     const repcommentaireData = {
        commentaire : req.body.repcommentaire , 
-      professeurId : parseInt(req.body.professeur) , 
-      commentaireId : parseInt(req.body.commentaireId),
+       professeurId : parseInt(req.body.professeur) , 
+       commentaireId : parseInt(req.body.commentaireId),
+       coursExistantId : parseInt(req.body.courId),
        autheur : req.body.autheur ,
        createdAt: new Date(),
        updatedAt: new Date()
@@ -78,7 +79,7 @@ repcommentaire.put('' , (req, res) =>{
                     repcommentaire.update({
                         where : {id : req.body.id},
                      
-                        commentaire : req.body.Repcommentaire
+                        commentaire : req.body.commentaire
                         
                       
                       }
@@ -119,11 +120,11 @@ repcommentaire.delete('/:commentaireId' , (req , res) => {
 
 // Get All commentaire 
 
-repcommentaire.get('/All/:commentaireId' ,(req , res) => {
+repcommentaire.get('/All/:courId' ,(req , res) => {
   //  jwt.verify(req.body.token,session.SECRET_KEY)
   
     Repcommentaire.findAll({
-        where : {commentaireId : req.params.commentaireId},
+        where : {coursExistantId : req.params.courId},
             },
             
               )    .then(commentaire =>{
@@ -165,9 +166,11 @@ repcommentaire.get('/All/:commentaireId' ,(req , res) => {
                                 {},
                                 {
                                     id : comment.id,
+                                    commentaire : comment.commentaire,
                                     commentaireId : comment.commentaireId,
                                     autheur : comment.autheur,
                                     professeurId : comment.professeurId,
+                                    courId : comment.coursExistantId,
                                     createdAt : (comment.createdAt).toGMTString() ,
                                     updatedAt : (comment.updatedAt).toGMTString(),}
                             )})

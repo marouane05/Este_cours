@@ -147,10 +147,10 @@ where : {id : req.params.moduleId},
     }) 
 });
 
-/*
-module.get('/mylist/:professeurId' , (req, res) =>{
 
-    Module.findOne({
+moduleUniversitaire.get('/mylist/:professeurId' , (req, res) =>{
+
+    Module.findAll({
 where : {professeurId : req.params.professeurId},
     })    .then(module =>{
         if(module){
@@ -162,5 +162,5 @@ where : {professeurId : req.params.professeurId},
         res.send('error' + err)
     }) 
 });
-*/
+
 module.exports = moduleUniversitaire ;

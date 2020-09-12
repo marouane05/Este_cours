@@ -16,6 +16,7 @@ constructor(){
     this.state={
         commentaire :'' ,
         commentaires : [],
+        repcommentaires:[],
         commentUpdated :'',
     }
     this.handleChange = this.handleChange.bind(this)
@@ -49,6 +50,13 @@ UpdateCommentaires=()=>{
     const commentaires = res.data;
     this.setState({ commentaires });
   })
+  axios.get(`/repcommentaire/All/${this.props.location.state.id}`)
+  .then(res => {
+    const repcommentaires = res.data;
+   
+    this.setState({ repcommentaires });
+  })
+
 
 }
 
@@ -229,39 +237,47 @@ src={'/'+this.props.location.state.url}
   :<Comment.Actions></Comment.Actions>  }
          
       </Comment.Content>
+
+      <Comment.Group>  
+        
+        { /*
+      this.ReponseComment(com.id,this.state.commentaires)
+        */ }
+        
+
+        {this.state.repcommentaires.map((com)=>
+   com.commentaireId == comment.id ?
+    <Comment>
+      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+      <Comment.Content>
+        <Comment.Author as='a'>{com.autheur}</Comment.Author>
+        <Comment.Metadata>
+      <div>{com.createdAt}</div>
+
+        </Comment.Metadata>
+        <Comment.Text>{com.commentaire}</Comment.Text>
+        
+        
+          <Comment.Actions>
+          </Comment.Actions>
+      </Comment.Content>
+     
+     
+
+</Comment> 
+ : <Comment></Comment> 
+)
+        }
+
+
+         </Comment.Group>
+
+
+
     </Comment>
 )}
-    <Comment>
-      <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
-      <Comment.Content>
-        <Comment.Author as='a'>Elliot Fu</Comment.Author>
-        <Comment.Metadata>
-          <div>Yesterday at 12:30AM       <img src={iconEdit}/></div>
-        </Comment.Metadata>
-        <Comment.Text>
-          <p>This has been very useful for my research. Thanks as well!</p>
-        </Comment.Text>
-        <Comment.Actions>
-          <Comment.Action>Reply</Comment.Action>
-        </Comment.Actions>
-      </Comment.Content>
-      <Comment.Group>
-        <Comment>
-          <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/jenny.jpg' />
-          <Comment.Content>
-            <Comment.Author as='a'>Jenny Hess</Comment.Author>
-            <Comment.Metadata>
-              <div>Just now</div>
-            </Comment.Metadata>
-            <Comment.Text>Elliot you are always so right :)</Comment.Text>
-            <Comment.Actions>
-              <Comment.Action>Reply</Comment.Action>
-            </Comment.Actions>
-          </Comment.Content>
-        </Comment>
-        
-      </Comment.Group>
-    </Comment>
+   
+       
 
     
     <Form onSubmit={this.EnvoyerCommentaire} reply>
