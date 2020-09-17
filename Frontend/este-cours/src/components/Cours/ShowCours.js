@@ -44,9 +44,25 @@ constructor(){
         selectOptions : [],
         modules : [],
         ModuleCours:'', FiliereCours:'' , IntituleCours : '',
+        contenu :'',
+        displayAnnonceContent: false ,
         displayAnnonce : false ,
+        AnnonceRecu :null,
     }
 }
+
+
+getCoursOfModule=()=>{
+  axios.get(`/cours/prof/${localStorage.identification}/${this.state.ModuleCours}`)
+      .then(res => {
+        const cours = res.data;
+        this.setState({ cours });
+      }).catch((err)=>
+      console.log(err))
+}
+
+
+
 
 UpdateComponent(){
   axios.get(`/module/mylist/${localStorage.identification}`)
@@ -71,11 +87,17 @@ UpdateComponent(){
   
 
 
+
 }
 componentDidMount(){
     
   this.UpdateComponent()
 }
+
+
+
+
+
 
 handleClick = (intitule,urll,event) => {
   this.setState({ anchorEl: event.currentTarget ,
@@ -83,9 +105,19 @@ handleClick = (intitule,urll,event) => {
     url : urll });
 };
 
+
+
+
+
+
 handleClose = () => {
   this.setState({ anchorEl: null });
 };
+
+
+
+
+
 
 publierAnnonce =()=>{
   this.setState({
@@ -93,19 +125,50 @@ publierAnnonce =()=>{
   })
 
 const Form ={
-  idModule : this.state.idModule ,
-  idProf : localStorage.identification,
+  moduleId : this.state.ModuleCours ,
+  professeur : localStorage.identification,
   contenu : this.state.contenu ,
   autheur : localStorage.autheur
 }
-  axios.post('/annonce/',Form,{})
+  axios.post('/annonce/add',Form,{})
   .then((res)=>{
+this.getAnnonce();    
 
+console.log(res)
   }).catch((err)=>
   console.log(err))
 
+}
+
+
+
+
+
+
+
+
+getAnnonce=()=>{
+
+axios.get(`/annonce/bymodule/${this.state.ModuleCours}`).then(
+  (res)=>{
+    const AnnonceRecu = res.data
+this.setState({
+  AnnonceRecu 
+})
+  }
+).catch((err)=>
+console.log(err))
+
 
 }
+
+
+
+
+
+
+
+
 
 
 updateCours=(id)=>{
@@ -159,7 +222,7 @@ updateCours=(id)=>{
 axios.put(`/cours`,Form,{}).then(res=>{
   console.log(res);
   console.log(res.data);
-  this.UpdateComponent();
+  this.getCoursOfModule();
 }).catch((err)=>console.log(err))
    
     },
@@ -176,14 +239,74 @@ handleChange2=(e)=>{
   this.setState({ModuleCours:e.id, FiliereCours:e.idF , IntituleCours : e.intit})
   console.log(`Option selected:`,this.state.FiliereCours);
 
-      axios.get(`/cours/prof/${localStorage.identification}/${e.id}`)
+
+
+  axios.get(`/annonce/bymodule/${e.id}`).then(
+    (res)=>{
+      const AnnonceRecu = res.data
+  this.setState({
+    AnnonceRecu 
+  })
+  this.setState({
+    displayAnnonceContent : true
+   })
+    }
+  ).catch((err)=>
+  console.log(err))
+
+
+
+  axios.get(`/cours/prof/${localStorage.identification}/${e.id}`)
       .then(res => {
         const cours = res.data;
         this.setState({ cours });
-      })
+      }).catch((err)=>
+      console.log(err))
+
 
 
  }
+
+
+deleteAnnonce =()=>{
+
+  confirm({
+    title: "Etes vous sur ?",
+    content: "Vous voulez supprimer ta publication ",
+    footer: (dispatch) => (
+      <Fragment>
+        <ButtonAlert onClick={() => dispatch("cancel")}>Annuler</ButtonAlert>
+        <ButtonAlert onClick={() => dispatch("ok")} styleType="danger">
+          oui
+        </ButtonAlert>
+      </Fragment>
+    ),
+    closeBefore: (action, close) => {
+      if (action === "ok") {
+
+        axios.delete(`/annonce/${this.state.AnnonceRecu.mapub.id}`)
+  .then(res => {
+    this.setState({AnnonceRecu : null})
+
+    console.log(res.data);
+     })
+    .catch(err => console.log(err));
+    this.getAnnonce() 
+    close();
+    } else {
+        close();
+      }
+    }
+  });
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -212,7 +335,8 @@ console.log('id envoye',File.courId)
   .then(res => {
       console.log(res);
       console.log(res.data);
-      window.location.reload()})
+      this.getCoursOfModule()
+      close();})
     .catch(err => console.log(err));
      
       
@@ -222,10 +346,9 @@ console.log('id envoye',File.courId)
     }
   });
 
-
-  
-
 }
+
+
 
 
 
@@ -314,16 +437,19 @@ const StyledMenuItem = withStyles((theme) => ({
       <br></br>
 
 
-{this.state.displayAnnonce == false ?
+{
+this.state.displayAnnonceContent == true ?
+(this.state.AnnonceRecu == null || this.state.AnnonceRecu.mapub == null  ?
  <Fragment>
       <Form  onSubmit={this.publierAnnonce} reply>
       <Form.TextArea 
-      name="commentaire"
+      name="contenu"
       placeholder="Ecrire une annonce aux étudiants"
      // value={this.state.commentaire}
+     required
       onChange={(e)=>{
         this.setState({
-          commentaire : e.target.value
+          contenu : e.target.value
         })
       }}/>
      <ButtonAnnonce type="submit"  content='Publier' width={100}  icon='edit' primary />
@@ -335,15 +461,15 @@ const StyledMenuItem = withStyles((theme) => ({
 :
 
  <div class="notification is-warning justify-content-center">
-  <button class="delete" onClick={(e)=>this.setState({
-    displayAnnonce : false ,
-  })}></button>
-  <strong>Annonce </strong> <a>le (28-10-2020)</a><strong>:</strong>
+  <button class="delete" onClick={this.deleteAnnonce}></button>
+  
+  <strong>Mr. {this.state.AnnonceRecu.mapub.autheur} :</strong> 
   <br></br> <br></br>
-  Primar lorem ipsum dolor sit amet, consectetur
-  adipiscing elit lorem ipsum dolor, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Sit amet,
-  consectetur adipiscing elit
-</div>
+  {this.state.AnnonceRecu.mapub.contenu}
+  <br></br>
+  <br></br>
+  <a>{this.state.AnnonceRecu.mapub.createdAt}</a>
+</div> ) : (<br></br>)
     }
 
 <br></br>  
@@ -357,7 +483,7 @@ const StyledMenuItem = withStyles((theme) => ({
              
            <GridList cellHeight={240}   className={classes.gridList}>
         <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-          <ListSubheader component="div">December</ListSubheader>
+          <ListSubheader component="div">Liste des cours :</ListSubheader>
         </GridListTile>       
         {this.state.cours.map((cour)=>
         

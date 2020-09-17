@@ -66,6 +66,7 @@ componentDidMount(){
                 document={{
                     url: '/'+this.props.location.state.url,
                 }}
+            
                 showThumbnail={{ scale: 3 }}
             />
         </div>

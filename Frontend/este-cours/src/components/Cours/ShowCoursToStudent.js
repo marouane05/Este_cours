@@ -25,6 +25,9 @@ import confirm, { Button as ButtonAlert, alert } from "react-alert-confirm";
 import pdfIcon from '../../icons/pdfIcon.png'
 import VideoIcon from '../../icons/VideoIcon.png'
 import { Input } from '@material-ui/core';
+
+import fileDownload from 'js-file-download';
+
 export default class ShowCoursToStudent extends Component {
 
 constructor(){
@@ -43,6 +46,7 @@ constructor(){
         FiliereCours :'',
         ModuleCours :null,
         IntituleCours :'',
+        AnnonceRecu : null ,
     
         cours : [],
     }
@@ -92,6 +96,47 @@ componentDidMount(){
   this.UpdateComponent()
 }
 
+
+getAnnonce=()=>{
+
+  axios.get(`/annonce/bymodule/${this.state.ModuleCours}`).then(
+    (res)=>{
+      const AnnonceRecu = res.data
+  this.setState({
+    AnnonceRecu 
+  })
+    }
+  ).catch((err)=>
+  console.log(err))
+  
+  
+  }
+
+  
+addVue=(int,urll,id,descr)=>{
+
+  const Form = {
+    etudiant : localStorage.identification,
+    cours : id
+  }
+
+  axios.post('/vue/add',Form,{}).then(
+    (res)=>{
+      console.log(res.data)
+      this.props.history.push('/cours/show/video',{intitule:int,url : urll,id :id,description : descr})
+    }
+  ).catch((err)=>
+    console.log(err)
+  )
+
+
+}
+
+
+
+
+
+
 handleClick = (intitule,urll,event) => {
   this.setState({ anchorEl: event.currentTarget ,
     int : intitule,
@@ -102,10 +147,41 @@ handleClose = () => {
   this.setState({ anchorEl: null });
 };
 
+
+download(url,intitule){
+
+axios({
+  url: '/'+url,
+  method: 'GET',
+  responseType: 'blob', // important
+}).then((response) => {
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', intitule+'.pdf');
+  document.body.appendChild(link);
+  link.click();
+});
+
+}
+
+
+
+
 handleChange2=(e)=>{
     this.setState({ModuleCours:e.id, FiliereCours:e.idF , IntituleCours : e.intit})
     console.log(`Option selected:`,this.state.FiliereCours);
    // this.UpdateCourses()
+   axios.get(`/annonce/bymodule/${e.id}`).then(
+    (res)=>{
+      const AnnonceRecu = res.data
+  this.setState({
+    AnnonceRecu 
+  })
+    }
+  ).catch((err)=>
+  console.log(err))
+
   axios.get(`/cours/module/${e.id}`)
    .then(res => {
      const cours = res.data;
@@ -193,7 +269,23 @@ const StyledMenuItem = withStyles((theme) => ({
 
       />
  <br></br>             
-
+{
+  this.state.AnnonceRecu == null || this.state.AnnonceRecu.mapub == null  ?
+   <br></br>
+   
+   :
+   
+    <div class="notification is-warning justify-content-center">
+    
+     
+     <strong>Mr. {this.state.AnnonceRecu.mapub.autheur} :</strong> 
+     <br></br> <br></br>
+     {this.state.AnnonceRecu.mapub.contenu}
+     <br></br>
+     <br></br>
+     <a>{this.state.AnnonceRecu.mapub.createdAt}</a>
+   </div> 
+}
 
 <br></br>  
     <div class="row justify-content-center">
@@ -256,6 +348,7 @@ const StyledMenuItem = withStyles((theme) => ({
 ) }
 </GridList>
 
+
 </div> </div> </div> </div> </div> </div> 
 
         )
@@ -265,12 +358,12 @@ const StyledMenuItem = withStyles((theme) => ({
       if(type=="document"){
     return <div>
       <MenuItem onClick={()=>this.props.history.push('/cours/test',{intitule:int,url : urll,id :id,description : descr})}>ouvrir</MenuItem>
-      
+    <MenuItem onClick={()=>this.download(urll,int)}>Télécharger</MenuItem>
       </div> }
       else
       {
         return <div>
-        <MenuItem onClick={()=>this.props.history.push('/cours/show/video',{intitule:int,url : urll,id : id,description : descr})}>ouvrir</MenuItem>
+        <MenuItem onClick={()=>this.addVue(int,urll,id,descr)}>ouvrir</MenuItem>
         
         </div>
       }

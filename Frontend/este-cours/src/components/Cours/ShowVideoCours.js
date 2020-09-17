@@ -7,6 +7,7 @@ import 'semantic-ui-css/semantic.min.css'
 import {Card} from 'react-bootstrap'
 import axios from 'axios';
 import iconEdit from '../../icons/iconEdit.png'
+import { Redirect } from 'react-router-dom'
 import confirm, { Button as ButtonAlert, alert } from "react-alert-confirm";
 
 export default class ShowVideoCours extends Component {
@@ -18,6 +19,7 @@ constructor(){
         commentaires : [],
         commentaireEtudiant : [],
         commentUpdated :'',
+        nombre : 0,
     }
     this.handleChange = this.handleChange.bind(this)
 }
@@ -194,9 +196,22 @@ deleteCommentaire =(id)=>{
   
   }
 
+  LoadVues=()=>{
 
+    if(this.props.location.state != undefined){
+    axios.get(`/vue/${this.props.location.state.id}`)
+    .then((res)=>{
+  this.setState({
+  nombre : res.data
+  })
+    console.log('vues :'+res.data)}
+    ).catch((err)=>console.log(err))
+    }
+  
+  }
 
 componentDidMount=()=>{
+  this.LoadVues()
   this.UpdateCommentaires()
 }
 
@@ -220,6 +235,7 @@ handleChange = (e) =>{
 
 
     render() {
+      if(this.props.location.state != undefined){
         return (
             <div className="bar">
                 <br></br><br></br>
@@ -237,7 +253,8 @@ src={'/'+this.props.location.state.url}
         height={300}
 />
 
-<br></br>
+<h1 style={{color : 'blue' }}>{this.state.nombre.count} vues</h1>
+
     <Card><Card.Body>
 <Comment.Group>
     <Header as='h5' dividing>
@@ -327,7 +344,10 @@ src={'/'+this.props.location.state.url}
 </div>
 </div>
 </div>
-        )
+        )}
+        else {
+          return <Redirect to='/cours/show' />
+        }
     }
 
 ReponseComment=(id,commentaires)=>{
@@ -358,6 +378,7 @@ ReponseComment=(id,commentaires)=>{
 </Comment> 
 //: <Comment></Comment> 
 )
+
 
 }    
 

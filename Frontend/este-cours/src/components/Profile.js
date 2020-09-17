@@ -29,8 +29,8 @@ class Profile extends Component {
         users["username"]= res.data["username"]
         users["email"]= res.data["email"]
         users["type"]= res.data["type"]
-        localStorage.setItem('type',res.data["type"])
-       console.log('type '+ res.data["type"]) 
+     //   localStorage.setItem('type',res.data["type"])
+    //   console.log('type '+ res.data["type"]) 
 
         if(res.data["type"]=="etudiant"){
         axios.get(`/etudiant/detail/${res.data["id"]}`).then(res=>{

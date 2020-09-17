@@ -76,6 +76,13 @@ var Commentaire = require('./Routes/CommentaireRoute')
 app.use('/commentaire',Commentaire)
 var Repcommentaire = require('./Routes/RepCommentaireRoute')
 app.use('/repcommentaire',Repcommentaire)
+
+var Annonce = require('./Routes/AnnonceRoute')
+app.use('/annonce',Annonce)
+
+var Vue = require('./Routes/VueRoute')
+app.use('/vue',Vue)
+
 app.listen(4000, () => {
   console.log('Example app listening on port 4000!')
 });

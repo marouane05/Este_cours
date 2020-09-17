@@ -58,7 +58,7 @@ annonce.post('/add' , (req , res ) => {
     
 
  Annonce.create(annonceData) .then(ann => {
-    res.json({status : ann.Annonce + ' registred !'})
+    res.send({ann})
 })
 .catch(err => {
     res.send('error' + err)
@@ -119,15 +119,20 @@ annonce.delete('/:annonceId' , (req , res) => {
 
 // Get All annonce 
 
-annonce.get('/All/:moduleId' ,(req , res) => {
+annonce.get('/bymodule/:moduleId' ,(req , res) => {
   //  jwt.verify(req.body.token,session.SECRET_KEY)
   
-    Annonce.findAll({
+    Annonce.findOne({
         where : {moduleId : req.params.moduleId},
+        order: [
+            ['createdAt', 'DESC'],
+           
+        ],
             },
             
-              )    .then(annonce =>{
-                if(annonce){
+            
+          )    .then(ann =>{
+                if(ann){
                 
                    /* const resObj=    annonce.map(
                 (ann)=> {
@@ -159,22 +164,20 @@ annonce.get('/All/:moduleId' ,(req , res) => {
                     )
                     res.json(resObj) */
 
-                 const resObj=    annonce.map(
-                        (ann)=> {
-                            return Object.assign(
+                 const mapub=  Object.assign(
                                 {},
                                 {
                                     id : ann.id,
                                     contenu : ann.contenu,
                                     autheur : ann.autheur,
-                                    etudiantId : ann.etudiantId,
+                                    professeurId : ann.professeurId,
                                     createdAt : (ann.createdAt).toGMTString() ,
                                     updatedAt : (ann.updatedAt).toGMTString(),}
-                            )})
+                            )
 
-                   res.send(resObj)
+                   res.send({mapub})
                 }else {
-                    res.send('Eutdiant does not exists')
+                    res.send({mapub : null})
                 }
             }).catch(err =>{
                 res.send('error' + err)
